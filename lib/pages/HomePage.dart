@@ -5,7 +5,6 @@ import 'package:emergency_app/pages/Contacts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:intl/intl.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
