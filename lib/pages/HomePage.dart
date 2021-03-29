@@ -9,7 +9,6 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
-import 'package:emergency_app/pages/Contacts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 
