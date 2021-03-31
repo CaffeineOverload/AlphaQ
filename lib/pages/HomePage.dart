@@ -12,6 +12,7 @@ import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:flutter/services.dart';
+import 'package:emergency_app/models/contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -25,7 +26,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   AnimationController controller;
   Animation animation;
   TextEditingController nameController = TextEditingController();
-  String name= 'Susan';
 
 
   double buttonDepth = 100;
@@ -51,9 +51,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> asyncMethod() async {
     pref=await SharedPreferences.getInstance();
-    pref.setString('userName', name);
-    pref.setString('contactsData', '[{"name":"Harsh Malvi","number":"92349878924"},{"name":"Krishna","number":"9234787435"},{"name":"Deep Rodge","number":"923984574"}]');
-    contactsData = pref.getString('contactsData');
+    name = pref.getString('userName')??'';
+    contactslist = ContactsData.decode((pref.getString('contactsData'))??'[]');
   }
 
   @override
@@ -61,6 +60,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Color baseColor = Color(0xffEFF2F8);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    currentDisplaySize.height = height;
+    currentDisplaySize.width = width;
     switch (_pageState) {
       case 0:
         _yOffset = height;
@@ -325,6 +326,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   onTap: () {
                                     setState(() {
                                      _editmode = !_editmode;
+                                     pref.setString('userName', name);
                                     });
                                   },
                                   child: Icon(
