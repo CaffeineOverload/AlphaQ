@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 Widget myPopMenu(double width, double height) {
   return PopupMenuButton(
       onSelected: (value) {
+        HapticFeedback.selectionClick();
         if(value == 1){
           ///TODO: Direct to maps with Police Stations selected
         }

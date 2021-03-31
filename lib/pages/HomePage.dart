@@ -11,6 +11,9 @@ import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
@@ -42,8 +45,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 500), vsync: this);
     animation =
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    // TODO: implement initState
+    asyncMethod();
     super.initState();
+  }
+
+  Future<void> asyncMethod() async {
+    pref=await SharedPreferences.getInstance();
+    pref.setString('userName', name);
+    pref.setString('contactsData', '[{"name":"Harsh Malvi","number":"92349878924"},{"name":"Krishna","number":"9234787435"},{"name":"Deep Rodge","number":"923984574"}]');
+    contactsData = pref.getString('contactsData');
   }
 
   @override
@@ -110,6 +120,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     onTap: () {
                                       setState(() {
                                         if(_pageState!=1){
+                                          HapticFeedback.selectionClick();
                                           changeBlurSigma(_pageState);
                                           _pageState = 1;
                                           nameController.text=name;
@@ -190,6 +201,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     color: baseColor,
                                     child: GestureDetector(
                                       onTap: () {
+                                        HapticFeedback.lightImpact();
                                         buttonPressed();
                                       },
                                       child: Container(
@@ -221,6 +233,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         padding: const EdgeInsets.only(top: 20),
                         child: GestureDetector(
                           onTap: () {
+                            HapticFeedback.lightImpact();
                             button2Pressed();
                           },
                           child: ClayContainer(
@@ -334,7 +347,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               readOnly: _editmode?false:true,
                               style: TextStyle(fontSize: height * 0.0226, fontWeight: FontWeight.w600),
                               keyboardType: TextInputType.name,
-                              textInputAction: TextInputAction.continueAction,
+                              //textInputAction: TextInputAction.continueAction,
                               controller: nameController,
                               onChanged: (value) {
                                 setState(() {
@@ -445,7 +458,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                print(currentIndex);
                 if (currentIndex != 3 &&
                     currentIndex != 0 &&
                     currentIndex != 1) {

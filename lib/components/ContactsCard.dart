@@ -4,9 +4,13 @@ import 'package:emergency_app/data/data.dart';
 
 class ContactsCard extends StatelessWidget {
   const ContactsCard({
-   this.data,
+   this.list,
+    this.index,
+    this.update
   });
-  final ContactsData data;
+  final List<ContactsData> list;
+  final int index;
+  final Function update;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;double width = MediaQuery.of(context).size.width;
@@ -27,21 +31,22 @@ class ContactsCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(data.name,
+                  Text(list[index].name,
                   style: TextStyle(
                     fontSize: height*0.0213,
                     fontWeight: FontWeight.w600
                   ),),
-                  Text(data.number,
+                  Text(list[index].number,
                     style: TextStyle(
                         fontSize: height*0.0189,
                         fontWeight: FontWeight.w400
                     ),)
                 ],
               ),
-              IconButton(icon: Icon(Icons.delete, color: Colors.red,), onPressed: (){
-
-              })
+              IconButton(icon: Icon(Icons.delete, color: Colors.red,),
+                  onPressed: (){
+                  update(index);
+              }),
             ]
         ),
       ),

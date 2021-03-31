@@ -4,7 +4,10 @@ import 'package:clay_containers/clay_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:emergency_app/components/ContactsCard.dart';
 import 'package:emergency_app/data/data.dart';
-//import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'HomePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ContactsPage extends StatefulWidget {
@@ -16,6 +19,22 @@ class ContactsPage extends StatefulWidget {
 class _ContactsPageState extends State<ContactsPage> {
   double buttonDepth = 30;
 
+  void _updateContactsList(int index) {
+    setState(() {
+      HapticFeedback.lightImpact();
+      contactslist.removeAt(index);
+    });
+    ContactsData.updateContactsListInPref(pref);
+    }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final String encodedData = ContactsData.encode(contactslist);
+    print(encodedData);
+    contactslist = ContactsData.decode(contactsData);
+  }
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -31,6 +50,7 @@ class _ContactsPageState extends State<ContactsPage> {
             color: Colors.black,
           ),
           onPressed: () {
+            HapticFeedback.lightImpact();
             Navigator.pop(context);
           },
         ),
@@ -68,19 +88,25 @@ class _ContactsPageState extends State<ContactsPage> {
                         padding: EdgeInsets.all(8.0),
                         child: GestureDetector(
                           onTap: () async {
+                            HapticFeedback.lightImpact();
                             buttonPressed();
-                            /*final granted = await FlutterContactPicker.requestPermission();
-                            if (await FlutterContactPicker.hasPermission()) {
-                              PhoneContact contacts =
-                                  await FlutterContactPicker.pickPhoneContact();
-                              setState(() {
-
-
-                              contactslist.add(ContactsData(
-                                  name: contacts.fullName,
-                                  number: contacts.phoneNumber.toString()));
-                              });
-                            }*/
+                            try{
+                              final granted = await FlutterContactPicker
+                                  .requestPermission();
+                              if (await FlutterContactPicker.hasPermission()) {
+                                PhoneContact contacts =
+                                await FlutterContactPicker.pickPhoneContact();
+                                setState(() {
+                                  contactslist.add(ContactsData(
+                                      name: contacts.fullName,
+                                      number: contacts.phoneNumber.number.toString()));
+                                });
+                              }
+                            } on Exception catch (_) {
+                              print("throwing new error");
+                              throw Exception("Can't add contacts");
+                            }
+                            ContactsData.updateContactsListInPref(pref);
                           },
                           child: ClayContainer(
                               color: baseColor = Colors.white,
@@ -115,7 +141,7 @@ class _ContactsPageState extends State<ContactsPage> {
                         scrollDirection: Axis.vertical,
                         itemCount: contactslist.length,
                         itemBuilder: (BuildContext ctxt, int index) {
-                          return ContactsCard(data: contactslist[index]);
+                          return ContactsCard(list: contactslist, index: index,update: _updateContactsList,);
                         }),
                   ),
                 ),
