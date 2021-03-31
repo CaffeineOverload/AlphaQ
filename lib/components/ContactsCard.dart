@@ -1,6 +1,5 @@
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
-import 'package:emergency_app/data/data.dart';
 
 class ContactsCard extends StatelessWidget {
   const ContactsCard({
