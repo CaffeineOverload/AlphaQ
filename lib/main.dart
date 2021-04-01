@@ -1,8 +1,14 @@
+import 'package:emergency_app/pages/Register.dart';
+import 'package:emergency_app/pages/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'pages/HomePage.dart';
-import 'pages/Contacts.dart';
 
-void main() {
+import 'pages/Contacts.dart';
+import 'pages/HomePage.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -18,10 +24,12 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Color(0xff81AEF4),
         fontFamily: 'Quicksand',
       ),
-      initialRoute: HomePage.id,
+      initialRoute: LoginPage.id,
       routes: {
-        HomePage.id:(context) => HomePage(),
-        ContactsPage.id:(context) => ContactsPage(),
+        HomePage.id: (context) => HomePage(),
+        ContactsPage.id: (context) => ContactsPage(),
+        LoginPage.id: (context) => LoginPage(),
+        RegisterPage.id: (context) => RegisterPage(),
       },
     );
   }

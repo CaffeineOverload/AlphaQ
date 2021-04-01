@@ -23,11 +23,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.17.0
-  bottom_navy_bar: ^5.6.0
-  shared_preferences: ^2.0.5
-  clay_containers: ^0.3.2
-  font_awesome_flutter: ^9.0.0
+  intl:
+  firebase_auth:
+  bottom_navy_bar:
+  clay_containers:
+  font_awesome_flutter:
+  cloud_firestore:
+  rflutter_alert:
 #  fluttercontactpicker: ^4.4.0
 
 

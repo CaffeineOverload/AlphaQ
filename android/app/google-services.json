@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "696097550259",
+    "project_id": "emergency-app-79899",
+    "storage_bucket": "emergency-app-79899.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696097550259:android:b2692c025fa294438ea5c6",
+        "android_client_info": {
+          "package_name": "com.caffineoverflow.emergency_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "696097550259-oas43rgjp0v85slaoadhr0m3qh1mcai2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBO90w1IwQ3rLyTYJhf9tyhTITwwz40bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "696097550259-oas43rgjp0v85slaoadhr0m3qh1mcai2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
