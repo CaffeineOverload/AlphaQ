@@ -545,11 +545,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void updateDetails() async {
     final userdetail = widget.currentUser.user.uid;
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('uid', isEqualTo: userdetail)
-        .get()
-        .then((value) => print(value.docs.last));
+    await FirebaseFirestore.instance.collection('users').get();
   }
 
   changeBlurSigma(int pageState) {
