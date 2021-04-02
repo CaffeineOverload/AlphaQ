@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:clay_containers/clay_containers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Animation animation;
   TextEditingController nameController = TextEditingController();
   String name = 'Susan';
-
+  final currenUser = null;
   double buttonDepth = 100;
   double button2Depth = 30;
   bool firstvalue = true;
@@ -45,6 +46,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     // TODO: implement initState
     super.initState();
+    if (widget.currentUser != null) {
+      setState(() {
+        //print(widget.currentUser);
+        name = widget.currentUser.user.displayName;
+      });
+    }
   }
 
   @override
@@ -311,6 +318,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               GestureDetector(
                                   onTap: () {
                                     setState(() {
+                                      if (_editmode) updateDetails();
                                       _editmode = !_editmode;
                                     });
                                   },
@@ -533,6 +541,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
       });
     });
+  }
+
+  void updateDetails() async {
+    final userdetail = widget.currentUser.user.uid;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: userdetail)
+        .get()
+        .then((value) => print(value.docs.last));
   }
 
   changeBlurSigma(int pageState) {

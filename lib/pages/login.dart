@@ -22,97 +22,100 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextField(
-              controller: emailController,
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              TextField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  email = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextField(
-              obscureText: true,
-              controller: passController,
-              onChanged: (value) {
-                password = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+              SizedBox(
+                height: 20,
+              ),
+              TextField(
+                obscureText: true,
+                controller: passController,
+                onChanged: (value) {
+                  password = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: FlatButton(
-                      onPressed: () {
-                        _getuser();
-                      },
-                      child: Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: FlatButton(
+                        onPressed: () {
+                          _getuser();
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, RegisterPage.id);
-                      },
-                      child: Text(
-                        "Register",
-                        style: TextStyle(color: Colors.white),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, RegisterPage.id);
+                        },
+                        child: Text(
+                          "Register",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _getuser() async {
+  Future<void> _getuser() async {
     try {
       final currentUser = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      Navigator.pushNamed(context, HomePage.id,
-          arguments: HomePage(
-            currentUser: currentUser,
-          ));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    currentUser: currentUser,
+                  )));
     } catch (e) {
       print(e);
       showError(context, e);

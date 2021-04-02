@@ -20,81 +20,84 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextField(
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                name = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                email = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            TextField(
-              obscureText: true,
-              onChanged: (value) {
-                password = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: FlatButton(
-                onPressed: () {
-                  _createuser();
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  name = value;
                 },
-                child: Text(
-                  "Register",
-                  style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+                onChanged: (value) {
+                  email = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextField(
+                obscureText: true,
+                onChanged: (value) {
+                  password = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: FlatButton(
+                  onPressed: () {
+                    _createuser();
+                  },
+                  child: Text(
+                    "Register",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _createuser() async {
+  Future<void> _createuser() async {
     try {
       final currentuser = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      final uid = currentuser.user.uid;
+      await currentuser.user.updateProfile(
+        displayName: name,
+      );
       await FirebaseFirestore.instance.collection('users').add({
-        'uid': uid,
+        'uid': currentuser.user.uid,
         'bloodgroup': 'A+',
         'age': 18,
         'contacts': [],
@@ -102,7 +105,12 @@ class _RegisterPageState extends State<RegisterPage> {
         'name': name,
         'imageurl': '',
       });
-      Navigator.pushNamed(context, HomePage.id);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage(
+                    currentUser: currentuser,
+                  )));
     } catch (e) {
       // TODO
       print(e);

@@ -3,14 +3,12 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 void showError(BuildContext context, final e) {
   String error = '';
-  int i = 0;
-  final er = e.toString();
-  while (i < er.length && er[i] != ']') i++;
-  i += 2;
-  while (i < er.length) {
-    error += er[i];
-    i++;
-  }
+  if (e.code == 'wrong-password')
+    error = 'Please enter correct password';
+  else if (e.code == 'user-not-found')
+    error = 'No user found for given email';
+  else if (e.code == 'email-already-in-use')
+    error = 'Email is already registered with us';
   Alert(
       context: context,
       type: AlertType.error,
