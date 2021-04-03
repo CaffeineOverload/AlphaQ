@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'Settings.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,11 @@ import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
+import 'package:flutter/services.dart';
+import 'package:emergency_app/models/contacts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:emergency_app/data/constants.dart';
+
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
@@ -22,8 +28,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   AnimationController controller;
   Animation animation;
   TextEditingController nameController = TextEditingController();
-  String name= 'Susan';
-
 
   double buttonDepth = 100;
   double button2Depth = 30;
@@ -42,8 +46,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 500), vsync: this);
     animation =
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
-    // TODO: implement initState
+    asyncMethod();
     super.initState();
+  }
+
+  Future<void> asyncMethod() async {
+    pref=await SharedPreferences.getInstance();
+    name = pref.getString('userName')??'';
+    darkMode = pref.getBool('dark');
+    dialEmergencyNumbers = pref.getBool('emergency');
+    recordAudio = pref.getBool('audio');
+    phraseDetection = pref.getBool('phrase');
+    contactslist = ContactsData.decode((pref.getString('contactsData'))??'[]');
   }
 
   @override
@@ -51,6 +65,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Color baseColor = Color(0xffEFF2F8);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    currentDisplaySize.height = height;
+    currentDisplaySize.width = width;
     switch (_pageState) {
       case 0:
         _yOffset = height;
@@ -110,6 +126,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     onTap: () {
                                       setState(() {
                                         if(_pageState!=1){
+                                          HapticFeedback.selectionClick();
                                           changeBlurSigma(_pageState);
                                           _pageState = 1;
                                           nameController.text=name;
@@ -190,6 +207,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     color: baseColor,
                                     child: GestureDetector(
                                       onTap: () {
+                                        HapticFeedback.lightImpact();
                                         buttonPressed();
                                       },
                                       child: Container(
@@ -221,6 +239,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         padding: const EdgeInsets.only(top: 20),
                         child: GestureDetector(
                           onTap: () {
+                            HapticFeedback.lightImpact();
                             button2Pressed();
                           },
                           child: ClayContainer(
@@ -312,6 +331,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   onTap: () {
                                     setState(() {
                                      _editmode = !_editmode;
+                                     pref.setString('userName', name);
                                     });
                                   },
                                   child: Icon(
@@ -334,7 +354,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               readOnly: _editmode?false:true,
                               style: TextStyle(fontSize: height * 0.0226, fontWeight: FontWeight.w600),
                               keyboardType: TextInputType.name,
-                              textInputAction: TextInputAction.continueAction,
+                              //textInputAction: TextInputAction.continueAction,
                               controller: nameController,
                               onChanged: (value) {
                                 setState(() {
@@ -445,8 +465,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                print(currentIndex);
-                if (currentIndex != 3 &&
+                if (
                     currentIndex != 0 &&
                     currentIndex != 1) {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
@@ -463,6 +482,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         return HomePage.id;
       case 2:
         return ContactsPage.id;
+      case 3:
+        return SettingPage.id;
     }
   }
 
