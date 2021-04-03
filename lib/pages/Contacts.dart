@@ -44,6 +44,7 @@ class _ContactsPageState extends State<ContactsPage> {
           onPressed: () {
             HapticFeedback.lightImpact();
             Navigator.pop(context);
+            currentIndex = 0;
           },
         ),
         backgroundColor: Colors.transparent,

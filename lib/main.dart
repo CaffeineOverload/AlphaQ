@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/HomePage.dart';
 import 'pages/Contacts.dart';
+import 'pages/Settings.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         HomePage.id:(context) => HomePage(),
         ContactsPage.id:(context) => ContactsPage(),
+        SettingPage.id:(context) => SettingPage(),
       },
     );
   }

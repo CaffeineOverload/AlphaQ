@@ -31,3 +31,9 @@ String contactsData;
 
 SharedPreferences pref;
 
+bool darkMode;
+bool dialEmergencyNumbers;
+bool recordAudio;
+bool phraseDetection;
+
+

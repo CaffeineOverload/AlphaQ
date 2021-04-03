@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'Settings.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,7 @@ import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:flutter/services.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:emergency_app/data/constants.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -26,7 +28,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   AnimationController controller;
   Animation animation;
   TextEditingController nameController = TextEditingController();
-
 
   double buttonDepth = 100;
   double button2Depth = 30;
@@ -52,6 +53,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> asyncMethod() async {
     pref=await SharedPreferences.getInstance();
     name = pref.getString('userName')??'';
+    darkMode = pref.getBool('dark');
+    dialEmergencyNumbers = pref.getBool('emergency');
+    recordAudio = pref.getBool('audio');
+    phraseDetection = pref.getBool('phrase');
     contactslist = ContactsData.decode((pref.getString('contactsData'))??'[]');
   }
 
@@ -460,7 +465,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                if (currentIndex != 3 &&
+                if (
                     currentIndex != 0 &&
                     currentIndex != 1) {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
@@ -477,6 +482,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         return HomePage.id;
       case 2:
         return ContactsPage.id;
+      case 3:
+        return SettingPage.id;
     }
   }
 
