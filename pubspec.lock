@@ -128,6 +128,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.0.0"
+  home_widget:
+    dependency: "direct main"
+    description:
+      name: home_widget
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   intl:
     dependency: "direct main"
     description:
@@ -272,7 +279,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   speech_to_text:
     dependency: "direct main"
     description:
