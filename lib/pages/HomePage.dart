@@ -17,7 +17,6 @@ import 'package:emergency_app/models/contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emergency_app/data/constants.dart';
 
-
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
   @override
@@ -39,7 +38,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double _yOffset = 0;
   bool _editmode = false;
 
-
   @override
   void initState() {
     controller = AnimationController(
@@ -51,13 +49,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> asyncMethod() async {
-    pref=await SharedPreferences.getInstance();
-    name = pref.getString('userName')??'';
+    pref = await SharedPreferences.getInstance();
+    name = pref.getString('userName') ?? '';
     darkMode = pref.getBool('dark');
     dialEmergencyNumbers = pref.getBool('emergency');
     recordAudio = pref.getBool('audio');
     phraseDetection = pref.getBool('phrase');
-    contactslist = ContactsData.decode((pref.getString('contactsData'))??'[]');
+    contactslist =
+        ContactsData.decode((pref.getString('contactsData')) ?? '[]');
   }
 
   @override
@@ -125,12 +124,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        if(_pageState!=1){
+                                        if (_pageState != 1) {
                                           HapticFeedback.selectionClick();
                                           changeBlurSigma(_pageState);
                                           _pageState = 1;
-                                          nameController.text=name;
-                                          _editmode=false;
+                                          nameController.text = name;
+                                          _editmode = false;
                                         }
                                       });
                                     },
@@ -206,6 +205,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     curveType: CurveType.convex,
                                     color: baseColor,
                                     child: GestureDetector(
+                                      onLongPress: () {
+                                        HapticFeedback.lightImpact();
+                                        buttonPressed();
+                                      },
                                       onTap: () {
                                         HapticFeedback.lightImpact();
                                         buttonPressed();
@@ -242,6 +245,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             HapticFeedback.lightImpact();
                             button2Pressed();
                           },
+                           onLongPress: () {
+                             HapticFeedback.lightImpact();
+                             buttonPressed();
+                             },
                           child: ClayContainer(
                             //parentColor: baseColor,
                             surfaceColor: Colors.red,
@@ -294,7 +301,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 sigmaY: controller.value * 4,
               ),
               child: GestureDetector(
-
                 child: AnimatedContainer(
                     padding: EdgeInsets.all(20),
                     duration: Duration(milliseconds: 1000),
@@ -323,21 +329,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     });
                                   },
                                   child: Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Colors.black,
-                                    size: height*0.0355,
-                              )),
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.black,
+                                    size: height * 0.0355,
+                                  )),
                               GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                     _editmode = !_editmode;
-                                     pref.setString('userName', name);
+                                      _editmode = !_editmode;
+                                      pref.setString('userName', name);
                                     });
                                   },
                                   child: Icon(
                                     Icons.edit,
-                                    color: _editmode?Colors.green:Colors.black,
-                                    size: _editmode?height*0.0355:height*0.0255,
+                                    color:
+                                        _editmode ? Colors.green : Colors.black,
+                                    size: _editmode
+                                        ? height * 0.0355
+                                        : height * 0.0255,
                                   )),
                             ],
                           ),
@@ -351,8 +360,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: TextField(
                               autofocus: false,
                               textAlign: TextAlign.center,
-                              readOnly: _editmode?false:true,
-                              style: TextStyle(fontSize: height * 0.0226, fontWeight: FontWeight.w600),
+                              readOnly: _editmode ? false : true,
+                              style: TextStyle(
+                                  fontSize: height * 0.0226,
+                                  fontWeight: FontWeight.w600),
                               keyboardType: TextInputType.name,
                               //textInputAction: TextInputAction.continueAction,
                               controller: nameController,
@@ -365,8 +376,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Enter Name',
-                                hintStyle: TextStyle(fontSize: height * 0.0186, fontWeight: FontWeight.w500),
-
+                                hintStyle: TextStyle(
+                                    fontSize: height * 0.0186,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -376,14 +388,46 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               children: <Widget>[
                                 Row(
                                   children: [
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.tint, color: Colors.red,), title: 'Blood Group', value: 'B+',),
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.clipboard, color: Colors.yellow[600],), title: 'Diseases', value: 'Na',),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.tint,
+                                        color: Colors.red,
+                                      ),
+                                      title: 'Blood Group',
+                                      value: 'B+',
+                                    ),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.clipboard,
+                                        color: Colors.yellow[600],
+                                      ),
+                                      title: 'Diseases',
+                                      value: 'Na',
+                                    ),
                                   ],
                                 ),
                                 Row(
                                   children: [
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.userAlt, color: Colors.blue,), title: 'Age', value: '19',),
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.tint, color: Colors.red,), title: 'Blood Group', value: 'B+',),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.userAlt,
+                                        color: Colors.blue,
+                                      ),
+                                      title: 'Age',
+                                      value: '19',
+                                    ),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.tint,
+                                        color: Colors.red,
+                                      ),
+                                      title: 'Blood Group',
+                                      value: 'B+',
+                                    ),
                                   ],
                                 ),
                               ],
@@ -465,9 +509,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                if (
-                    currentIndex != 0 &&
-                    currentIndex != 1) {
+                if (currentIndex != 0 && currentIndex != 1) {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
                 }
               });
@@ -530,4 +572,3 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 }
-
