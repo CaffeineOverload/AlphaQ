@@ -1,4 +1,5 @@
 import 'package:emergency_app/pages/Register.dart';
+import 'package:emergency_app/pages/forgetpass.dart';
 import 'package:emergency_app/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
         ContactsPage.id: (context) => ContactsPage(),
         LoginPage.id: (context) => LoginPage(),
         RegisterPage.id: (context) => RegisterPage(),
+        ForgetPass.id: (context) => ForgetPass(),
       },
     );
   }

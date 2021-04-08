@@ -30,6 +30,7 @@ dependencies:
   font_awesome_flutter:
   cloud_firestore:
   rflutter_alert:
+  modal_progress_hud: ^0.1.3
 #  fluttercontactpicker: ^4.4.0
 
 
