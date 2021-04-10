@@ -1,26 +1,27 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:clay_containers/clay_containers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emergency_app/components/PopupMenu.dart';
+import 'package:emergency_app/components/ProfileCard.dart';
+import 'package:emergency_app/components/UserAvatar.dart';
 import 'Settings.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:clay_containers/clay_containers.dart';
-import 'package:emergency_app/components/UserAvatar.dart';
-import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:flutter/services.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emergency_app/data/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
+  final currentUser;
+  HomePage({this.currentUser});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -29,7 +30,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   AnimationController controller;
   Animation animation;
   TextEditingController nameController = TextEditingController();
-
+//   String name = 'Susan';
+  final currenUser = null;
   double buttonDepth = 100;
   double button2Depth = 40;
   bool firstvalue = true;
@@ -39,7 +41,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _pageState = 0;
   double _yOffset = 0;
   bool _editmode = false;
-  
   @override
   void initState() {
     controller = AnimationController(
@@ -48,6 +49,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     asyncMethod();
     super.initState();
+    if (widget.currentUser != null) {
+      setState(() {
+        //print(widget.currentUser);
+        name = widget.currentUser.user.displayName;
+      });
+    }
   }
 
   Future<void> asyncMethod() async {
@@ -333,6 +340,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     });
                                   },
                                   child: Icon(
+
                                 Icons.keyboard_arrow_down,
                                 color: Theme.of(context).buttonColor,
                                     size: height*0.0355,
@@ -559,6 +567,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
       });
     });
+  }
+
+  void updateDetails() async {
+    final userdetail = widget.currentUser.user.uid;
+    final detail = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: userdetail)
+        .get();
+    //print(detail.docs.first.data().updateAll((key, value) =>));
   }
 
   changeBlurSigma(int pageState) {
