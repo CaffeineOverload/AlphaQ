@@ -9,7 +9,6 @@ import 'package:emergency_app/components/ContactsCard.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/data/data.dart';
 import 'HomePage.dart';

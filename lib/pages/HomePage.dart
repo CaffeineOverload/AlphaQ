@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> asyncMethod() async {
     pref = await SharedPreferences.getInstance();
-    name = pref.getString('userName') ?? '';
+    //name = pref.getString('userName') ?? '';
     darkMode = pref.getBool('dark');
     dialEmergencyNumbers = pref.getBool('emergency');
     recordAudio = pref.getBool('audio');

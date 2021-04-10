@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 import 'package:emergency_app/models/contacts.dart';
 
 int currentIndex = 0;
@@ -24,6 +22,8 @@ class ProfileData{
 DisplaySize currentDisplaySize = DisplaySize();
 
 String name;
+String bloodgroup;
+String diseases;
 
 List<ContactsData> contactslist = [];
 
