@@ -30,6 +30,9 @@ dependencies:
   font_awesome_flutter: ^9.0.0
   speech_to_text: ^3.2.0
   fluttercontactpicker: any
+  easy_dynamic_theme: any
+  provider: any
+  url_launcher: any
   home_widget: ^0.1.1+2
   quick_actions: ^0.6.0
 
