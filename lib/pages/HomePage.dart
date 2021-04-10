@@ -19,7 +19,6 @@ import 'package:emergency_app/data/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
-
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
   @override
@@ -40,9 +39,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _pageState = 0;
   double _yOffset = 0;
   bool _editmode = false;
-
-
-
+  
   @override
   void initState() {
     controller = AnimationController(
@@ -54,13 +51,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> asyncMethod() async {
-    pref=await SharedPreferences.getInstance();
-    name = pref.getString('userName')??'';
+    pref = await SharedPreferences.getInstance();
+    name = pref.getString('userName') ?? '';
     darkMode = pref.getBool('dark');
     dialEmergencyNumbers = pref.getBool('emergency');
     recordAudio = pref.getBool('audio');
     phraseDetection = pref.getBool('phrase');
-    contactslist = ContactsData.decode((pref.getString('contactsData'))??'[]');
+    contactslist =
+        ContactsData.decode((pref.getString('contactsData')) ?? '[]');
   }
 
   @override
@@ -128,12 +126,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        if(_pageState!=1){
+                                        if (_pageState != 1) {
                                           HapticFeedback.selectionClick();
                                           changeBlurSigma(_pageState);
                                           _pageState = 1;
-                                          nameController.text=name;
-                                          _editmode=false;
+                                          nameController.text = name;
+                                          _editmode = false;
                                         }
                                       });
                                     },
@@ -212,11 +210,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     color: baseColor,
                                     surfaceColor: baseColor,
                                     child: GestureDetector(
-                                      onTap: () async {
-
+                                      onLongPress: async () {
                                         HapticFeedback.lightImpact();
                                         buttonPressed();
-
+                                      },
+                                      onTap: async () {
+                                        HapticFeedback.lightImpact();
+                                        buttonPressed();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -250,6 +250,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             HapticFeedback.lightImpact();
                             button2Pressed();
                           },
+                           onLongPress: () {
+                             HapticFeedback.lightImpact();
+                             buttonPressed();
+                             },
                           child: ClayContainer(
                             //parentColor: baseColor,
                             color: baseColor,
@@ -301,7 +305,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 sigmaY: controller.value * 4,
               ),
               child: GestureDetector(
-
                 child: AnimatedContainer(
                     padding: EdgeInsets.all(20),
                     duration: Duration(milliseconds: 1000),
@@ -337,8 +340,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                     _editmode = !_editmode;
-                                     pref.setString('userName', name);
+                                      _editmode = !_editmode;
+                                      pref.setString('userName', name);
                                     });
                                   },
                                   child: Icon(
@@ -358,8 +361,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: TextField(
                               autofocus: false,
                               textAlign: TextAlign.center,
-                              readOnly: _editmode?false:true,
-                              style: TextStyle(fontSize: height * 0.0226, fontWeight: FontWeight.w600),
+                              readOnly: _editmode ? false : true,
+                              style: TextStyle(
+                                  fontSize: height * 0.0226,
+                                  fontWeight: FontWeight.w600),
                               keyboardType: TextInputType.name,
                               //textInputAction: TextInputAction.continueAction,
                               controller: nameController,
@@ -372,8 +377,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'Enter Name',
-                                hintStyle: TextStyle(fontSize: height * 0.0186, fontWeight: FontWeight.w500),
-
+                                hintStyle: TextStyle(
+                                    fontSize: height * 0.0186,
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -383,14 +389,46 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               children: <Widget>[
                                 Row(
                                   children: [
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.tint, color: Colors.red,), title: 'Blood Group', value: 'B+',),
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.clipboard, color: Colors.yellow[600],), title: 'Diseases', value: 'Na',),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.tint,
+                                        color: Colors.red,
+                                      ),
+                                      title: 'Blood Group',
+                                      value: 'B+',
+                                    ),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.clipboard,
+                                        color: Colors.yellow[600],
+                                      ),
+                                      title: 'Diseases',
+                                      value: 'Na',
+                                    ),
                                   ],
                                 ),
                                 Row(
                                   children: [
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.userAlt, color: Colors.blue,), title: 'Age', value: '19',),
-                                    ProfileCard(height: height, icon: FaIcon(FontAwesomeIcons.tint, color: Colors.red,), title: 'Blood Group', value: 'B+',),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.userAlt,
+                                        color: Colors.blue,
+                                      ),
+                                      title: 'Age',
+                                      value: '19',
+                                    ),
+                                    ProfileCard(
+                                      height: height,
+                                      icon: FaIcon(
+                                        FontAwesomeIcons.tint,
+                                        color: Colors.red,
+                                      ),
+                                      title: 'Blood Group',
+                                      value: 'B+',
+                                    ),
                                   ],
                                 ),
                               ],
@@ -472,9 +510,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                if (
-                    currentIndex != 0 &&
-                    currentIndex != 1) {
+                if (currentIndex != 0 && currentIndex != 1) {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
                 }
               });
@@ -537,4 +573,3 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 }
-
