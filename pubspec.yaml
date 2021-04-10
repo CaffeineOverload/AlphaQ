@@ -23,30 +23,27 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl:
-  firebase_auth:
-  bottom_navy_bar:
-  clay_containers:
-  font_awesome_flutter:
-  cloud_firestore:
-  rflutter_alert:
-  modal_progress_hud: ^0.1.3
-  intl: ^0.17.0
-  bottom_navy_bar: ^5.6.0
-  shared_preferences: ^2.0.5
-  clay_containers: ^0.3.2
-  font_awesome_flutter: ^9.0.0
-  speech_to_text: ^3.2.0
+  intl: any
+  firebase_auth: any
+  cloud_firestore: any
+  rflutter_alert: any
+  modal_progress_hud: any
+  bottom_navy_bar: any
+  shared_preferences: any
+  clay_containers: any
+  font_awesome_flutter: any
+  speech_to_text: any
   fluttercontactpicker: any
   easy_dynamic_theme: any
   provider: any
   url_launcher: any
-  home_widget: ^0.1.1+2
-  quick_actions: ^0.6.0
+  home_widget: any
+  quick_actions: any
+  plugin_platform_interface: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
+  cupertino_icons: any
 
 dev_dependencies:
   flutter_test:

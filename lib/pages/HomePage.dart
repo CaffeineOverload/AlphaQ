@@ -18,6 +18,7 @@ import 'package:emergency_app/models/contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emergency_app/data/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
   final currentUser;
@@ -217,11 +218,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     color: baseColor,
                                     surfaceColor: baseColor,
                                     child: GestureDetector(
-                                      onLongPress: async () {
+                                      onLongPress: () {
                                         HapticFeedback.lightImpact();
                                         buttonPressed();
                                       },
-                                      onTap: async () {
+                                      onTap: () {
                                         HapticFeedback.lightImpact();
                                         buttonPressed();
                                       },
@@ -257,10 +258,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             HapticFeedback.lightImpact();
                             button2Pressed();
                           },
-                           onLongPress: () {
-                             HapticFeedback.lightImpact();
-                             buttonPressed();
-                             },
+                          onLongPress: () {
+                            HapticFeedback.lightImpact();
+                            buttonPressed();
+                          },
                           child: ClayContainer(
                             //parentColor: baseColor,
                             color: baseColor,
@@ -340,11 +341,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     });
                                   },
                                   child: Icon(
-
-                                Icons.keyboard_arrow_down,
-                                color: Theme.of(context).buttonColor,
-                                    size: height*0.0355,
-                              )),
+                                    Icons.keyboard_arrow_down,
+                                    color: Theme.of(context).buttonColor,
+                                    size: height * 0.0355,
+                                  )),
                               GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -354,8 +354,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   },
                                   child: Icon(
                                     Icons.edit,
-                                    color: _editmode?Colors.green:Theme.of(context).buttonColor,
-                                    size: _editmode?height*0.0355:height*0.0255,
+                                    color: _editmode
+                                        ? Colors.green
+                                        : Theme.of(context).buttonColor,
+                                    size: _editmode
+                                        ? height * 0.0355
+                                        : height * 0.0255,
                                   )),
                             ],
                           ),
