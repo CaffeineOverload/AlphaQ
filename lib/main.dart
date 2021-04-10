@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
-            initialRoute: HomePage.id,
+            initialRoute: LoginPage.id,
 //             initialRoute: LoginPage.id,
             routes: {
               HomePage.id: (context) => HomePage(),
@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
               SettingPage.id: (context) => SettingPage(),
               RegisterPage.id: (context) => RegisterPage(),
               ForgetPass.id: (context) => ForgetPass(),
+              LoginPage.id: (context) => LoginPage(),
             },
           );
         });
