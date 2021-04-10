@@ -49,7 +49,7 @@ class ProfileCard extends StatelessWidget {
           ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey[200], width: 1)
+              border: Border.all(color: Theme.of(context).dividerColor, width: 1)
           ),
         ),
       ),
