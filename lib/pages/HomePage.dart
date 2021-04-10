@@ -16,6 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emergency_app/data/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 
 class HomePage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TextEditingController nameController = TextEditingController();
 
   double buttonDepth = 100;
-  double button2Depth = 30;
+  double button2Depth = 40;
   bool firstvalue = true;
   bool secondvalue = false;
   bool thirdvalue = false;
@@ -38,6 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _pageState = 0;
   double _yOffset = 0;
   bool _editmode = false;
+
 
 
   @override
@@ -62,7 +65,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Color baseColor = Color(0xffEFF2F8);
+    Color baseColor = Theme.of(context).backgroundColor;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     currentDisplaySize.height = height;
@@ -79,7 +82,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         break;
     }
     return Scaffold(
-      backgroundColor: Color(0xffEFF2F8),
+      backgroundColor: baseColor,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -150,7 +153,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                           Padding(
                               padding: const EdgeInsets.only(left: 20),
-                              child: myPopMenu(width, height)),
+                              child: myPopMenu(width, height, context)),
                           /*Container(
                             alignment: Alignment.topLeft,
                             child: myPopMenu(width,height)
@@ -182,6 +185,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         padding: EdgeInsets.all(height * 0.0438),
                         child: ClayContainer(
                           color: baseColor,
+                          surfaceColor: baseColor,
                           height: height * 0.280,
                           width: height * 0.280,
                           borderRadius: 130,
@@ -191,6 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           child: Center(
                             child: ClayContainer(
                               color: baseColor,
+                              surfaceColor: baseColor,
                               height: height * 0.270,
                               width: height * 0.270,
                               borderRadius: 200,
@@ -205,10 +210,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     depth: buttonDepth.toInt(),
                                     curveType: CurveType.convex,
                                     color: baseColor,
+                                    surfaceColor: baseColor,
                                     child: GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
+
                                         HapticFeedback.lightImpact();
                                         buttonPressed();
+
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -217,7 +225,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   'images/button.png'),
                                             ),
                                             shape: BoxShape.circle,
-                                            color: Colors.green),
+                                            color: Colors.red),
                                       ),
                                     )),
                               ),
@@ -229,7 +237,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       Text(
                         'Feeling Unsafe ?',
                         style: TextStyle(
-                            color: Colors.black,
+                            //color: Colors.black,
                             fontSize: height * 0.0282,
                             fontWeight: FontWeight.w700),
                       ),
@@ -244,9 +252,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           },
                           child: ClayContainer(
                             //parentColor: baseColor,
+                            color: baseColor,
                             surfaceColor: Colors.red,
-                            //decoration: BoxDecoration(
-                            //color: Colors.red,
                             borderRadius: 15,
                             depth: button2Depth.toInt(),
                             //),
@@ -301,7 +308,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     curve: Curves.fastLinearToSlowEaseIn,
                     transform: Matrix4.translationValues(0, _yOffset, 1),
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20))),
@@ -324,7 +331,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   },
                                   child: Icon(
                                 Icons.keyboard_arrow_down,
-                                color: Colors.black,
+                                color: Theme.of(context).buttonColor,
                                     size: height*0.0355,
                               )),
                               GestureDetector(
@@ -336,7 +343,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   },
                                   child: Icon(
                                     Icons.edit,
-                                    color: _editmode?Colors.green:Colors.black,
+                                    color: _editmode?Colors.green:Theme.of(context).buttonColor,
                                     size: _editmode?height*0.0355:height*0.0255,
                                   )),
                             ],
@@ -414,7 +421,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         //margin: EdgeInsets.all(5),
         height: height * 0.086,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: baseColor,
           //borderRadius: BorderRadius.circular(height * 0.0431),
         ),
         child: BottomNavyBar(

@@ -9,6 +9,16 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+    </queries>
     <!--<queries>
       <intent>
         <action android:name="android.speech.RecognitionService" />
@@ -17,7 +27,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="emergency_app"
+        android:label="Emergency App"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

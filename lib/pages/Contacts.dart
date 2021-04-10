@@ -33,13 +33,14 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var baseColor = Colors.white;
+    var baseColor = Theme.of(context).backgroundColor;
     return Scaffold(
+      backgroundColor: baseColor,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.black,
+            color: Theme.of(context).accentColor,
           ),
           onPressed: () {
             HapticFeedback.lightImpact();
@@ -111,6 +112,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           },
                           child: ClayContainer(
                               color: baseColor,
+                              surfaceColor: baseColor,
                               depth: buttonDepth.toInt(),
                               spread: 10,
                               borderRadius: 100,
@@ -133,6 +135,7 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: ClayContainer(
                   emboss: true,
                   color: baseColor,
+                  surfaceColor: baseColor,
                   depth: 20,
                   borderRadius: 20,
                   child: Padding(

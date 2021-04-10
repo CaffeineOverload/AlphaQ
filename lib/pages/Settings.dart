@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:emergency_app/data/constants.dart';
+import 'package:emergency_app/models/ThemeChanger.dart';
 import 'package:emergency_app/pages/HomePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/data/data.dart';
 import 'HomePage.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+
 
 class SettingPage extends StatefulWidget {
   static String id = 'SettingPage';
@@ -43,11 +46,12 @@ class _SettingPageState extends State<SettingPage> {
 
     var baseColor = Colors.white;
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_rounded,
-            color: Colors.black,
+            color: Theme.of(context).accentColor,
           ),
           onPressed: () {
             HapticFeedback.lightImpact();
@@ -107,6 +111,7 @@ class _SettingPageState extends State<SettingPage> {
                               child: CupertinoSwitch(
                                 onChanged: (value) {
                                   setState(() {
+                                    ThemeBuilder.of(context).changeTheme();
                                     darkMode = value;
                                     pref.setBool('dark', darkMode);
                                   });
@@ -249,3 +254,4 @@ class _SettingPageState extends State<SettingPage> {
     });
   }
 }
+

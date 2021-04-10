@@ -21,7 +21,7 @@ class ContactsCard extends StatelessWidget {
         height: currentDisplaySize.height*0.0947,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
-          color: Colors.white,
+          color: Theme.of(context).primaryColor,
         ),
 
         child: Row(

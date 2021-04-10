@@ -9,7 +9,14 @@
 	<string>To detect your cry for help</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To able to detect your help</string>
-
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>googlechromes</string>
+        <string>comgooglemaps</string>
+        <string>https</string>
+        <string>http</string>
+        <string>tel</string>
+    </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
