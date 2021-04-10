@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:emergency_app/models/contacts.dart';
 
 int currentIndex = 0;
 
@@ -8,12 +9,6 @@ class DisplaySize{
   DisplaySize({this.height, this.width});
 }
 
-class ContactsData{
-  String name;
-  String number;
-
-  ContactsData({this.name, this.number});
-}
 
 class ProfileData{
   String bloodGroup;
@@ -26,9 +21,19 @@ class ProfileData{
 
 DisplaySize currentDisplaySize = DisplaySize();
 
-List<ContactsData> contactslist = [
-  ContactsData(name: 'Harsh Malvi',number: '9386504938'),
-  ContactsData(name: 'Krishna Patel',number: '9387042837'),
-  ContactsData(name: 'Deep Rodge',number: '7016821780'),
-];
+String name;
+String bloodgroup;
+String diseases;
+
+List<ContactsData> contactslist = [];
+
+String contactsData;
+
+SharedPreferences pref;
+
+bool darkMode;
+bool dialEmergencyNumbers;
+bool recordAudio;
+bool phraseDetection;
+
 

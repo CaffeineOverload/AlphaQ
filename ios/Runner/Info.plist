@@ -2,8 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
     <key>NSContactsUsageDescription</key>
     <string>Reason we need access to the contact list</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>To detect your cry for help</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To able to detect your help</string>
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>googlechromes</string>
+        <string>comgooglemaps</string>
+        <string>https</string>
+        <string>http</string>
+        <string>tel</string>
+    </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
