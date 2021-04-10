@@ -21,55 +21,5 @@
         android:maxHeight="100dp"
         android:scaleType="centerInside"
         android:src="@drawable/button"
-        android:onClick=""
         />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/imageButton"
-        android:text="Feeling Alone \nClick here!!!"
-        android:textSize="15dp"
-        />
-<!--    <TextView-->
-<!--        android:id="@+id/textView2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/textView1"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:layout_marginLeft="50dp"-->
-<!--        android:layout_toEndOf="@id/imageButton"-->
-<!--        android:text="TextView" />-->
-
-
-    <!--    <TextView-->
-<!--        android:id="@+id/feelingalone"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:text="Feeling Alone"-->
-<!--        android:textColor="@android:color/white" />-->
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_toRightOf="@id/imageButton"-->
-<!--        android:layout_toEndOf="@id/imageButton"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:layout_below="@id/feelingalone"-->
-<!--        android:text="Click here"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        />-->
-    <!--    <Button-->
-<!--        android:id="@+id/alertButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:gravity="center"-->
-<!--        l-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:background="@drawable/red"-->
-<!--        />-->
 </RelativeLayout>
