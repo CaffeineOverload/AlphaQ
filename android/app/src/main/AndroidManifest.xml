@@ -15,33 +15,30 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
-      <intent>
-          <action android:name="android.intent.action.VIEW" />
-          <data android:scheme="https" />
-      </intent>
-      <intent>
-          <action android:name="android.intent.action.DIAL" />
-          <data android:scheme="tel" />
-      </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
     </queries>
-  <!--<queries>
-      <intent>
-        <action android:name="android.speech.RecognitionService" />
-      </intent>
-    </queries>-->
+
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="Emergency App">
-        <receiver android:name=".RedButton">
+        <receiver android:name=".AlertButton">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/red_button_info" />
+                android:resource="@xml/alert_button_info" />
         </receiver>
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -69,10 +66,11 @@
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
-
+            <intent-filter>
+                <action android:name="es.antonborri.home_widget.action.LAUNCH" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
