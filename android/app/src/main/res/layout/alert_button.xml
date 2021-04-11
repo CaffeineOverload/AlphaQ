@@ -1,4 +1,3 @@
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -10,16 +9,30 @@
     android:fadingEdge="horizontal"
     android:background="@drawable/launch_background">
 
-    <ImageButton
-        android:id="@+id/imageButton"
+<!--    <ImageButton-->
+<!--        android:id="@+id/imageButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:hapticFeedbackEnabled="true"-->
+<!--        android:maxHeight="100dp"-->
+<!--        android:scaleType="centerInside"-->
+<!--        android:src="@drawable/button"-->
+<!--        />-->
+
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/button"
+        app:srcCompat="@drawable/button"
+        android:maxHeight="200dp"
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
         android:hapticFeedbackEnabled="true"
-        android:maxHeight="100dp"
         android:scaleType="centerInside"
-        android:src="@drawable/button"
         />
+
 </RelativeLayout>

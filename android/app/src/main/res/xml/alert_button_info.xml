@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/red_button"
-    android:initialLayout="@layout/red_button"
-    android:minWidth="40dp"
-    android:minHeight="40dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:initialKeyguardLayout="@layout/alert_button"
+    android:initialLayout="@layout/alert_button"
+    android:minWidth="110dp"
+    android:minHeight="55dp"
+    android:previewImage="@drawable/button"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="86400000"
     android:widgetCategory="home_screen|keyguard"></appwidget-provider>

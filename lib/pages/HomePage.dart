@@ -220,7 +220,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     child: GestureDetector(
                                       onLongPress: () {
                                         HapticFeedback.lightImpact();
-                                        buttonPressed();
+                                        setState(() {
+                                          buttonDepth = 0;
+                                        });
+                                      },
+                                      onLongPressEnd: (LongPressEndDetails
+                                          longPressEndDetails) {
+                                        setState(() {
+                                          buttonDepth = 100;
+                                        });
                                       },
                                       onTap: () {
                                         HapticFeedback.lightImpact();
@@ -260,7 +268,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           },
                           onLongPress: () {
                             HapticFeedback.lightImpact();
-                            buttonPressed();
+                            setState(() {
+                              button2Depth = 0;
+                            });
+                          },
+                          onLongPressEnd:
+                              (LongPressEndDetails longPressEndDetails) {
+                            setState(() {
+                              button2Depth = 30;
+                            });
                           },
                           child: ClayContainer(
                             //parentColor: baseColor,
