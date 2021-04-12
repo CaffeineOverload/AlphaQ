@@ -1,4 +1,5 @@
 import 'package:emergency_app/data/commons.dart';
+import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/pages/HomePage.dart';
 import 'package:emergency_app/pages/Register.dart';
 import 'package:emergency_app/pages/forgetpass.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,8 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   final _auth = FirebaseAuth.instance;
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
-  String email;
-  String password;
+  String Email;
+  String Password;
   bool showSpinner = false;
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
-                    email = value;
+                    Email = value;
                   },
                   decoration: InputDecoration(
                     labelText: 'Email',
@@ -54,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                   controller: passController,
                   onChanged: (value) {
-                    password = value;
+                    Password = value;
                   },
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -130,14 +132,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _getuser() async {
     try {
-      final currentUser = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage(
-                    currentUser: currentUser,
-                  )));
+      currentUser = await _auth.signInWithEmailAndPassword(
+          email: Email, password: Password);
+      print(currentUser);
+      SharedPreferences.getInstance().then((prefs) {
+        email = Email;
+        password = Password;
+        prefs.setString('email', Email);
+        prefs.setString('password', Password);
+      });
+      Navigator.pushNamed(context, HomePage.id);
     } catch (e) {
       print(e);
       showError(context, e);
