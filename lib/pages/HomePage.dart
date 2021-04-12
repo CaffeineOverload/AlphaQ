@@ -9,9 +9,7 @@ import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
-import 'package:emergency_app/data/data.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -591,15 +589,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       case 'Settings':
         break;
     }
-  }
-
-  void updateDetails() async {
-    final userdetail = widget.currentUser.user.uid;
-    final detail = await FirebaseFirestore.instance
-        .collection('users')
-        .where('uid', isEqualTo: userdetail)
-        .get();
-    //print(detail.docs.first.data().updateAll((key, value) =>));
   }
 
   changeBlurSigma(int pageState) {
