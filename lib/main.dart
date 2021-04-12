@@ -13,7 +13,7 @@ import 'package:emergency_app/data/data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  //await Firebase.initializeApp();
   SharedPreferences.getInstance().then((prefs) {
     darkMode = prefs.getBool('dark') ?? false;
     runApp(MyApp());
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
-            initialRoute: LoginPage.id,
+            initialRoute: HomePage.id,
 //             initialRoute: LoginPage.id,
             routes: {
               HomePage.id: (context) => HomePage(),
