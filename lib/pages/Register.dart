@@ -15,6 +15,8 @@ class _RegisterPageState extends State<RegisterPage> {
   String email;
   String password;
   String name;
+  String age;
+  String bloodgroup;
   bool showSpinner = false;
   final _auth = FirebaseAuth.instance;
   @override
@@ -66,6 +68,32 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    age = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Age',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    bloodgroup = value;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'BloodGroup',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
