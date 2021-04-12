@@ -53,10 +53,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> asyncMethod() async {
     pref = await SharedPreferences.getInstance();
     //name = pref.getString('userName') ?? '';
-    darkMode = pref.getBool('dark');
-    dialEmergencyNumbers = pref.getBool('emergency');
-    recordAudio = pref.getBool('audio');
-    phraseDetection = pref.getBool('phrase');
+    darkMode = pref.getBool('dark') ?? false;
+    dialEmergencyNumbers = pref.getBool('emergency') ?? false;
+    recordAudio = pref.getBool('audio') ?? false;
+    phraseDetection = pref.getBool('phrase') ?? false;
     contactslist =
         ContactsData.decode((pref.getString('contactsData')) ?? '[]');
     currentUser = await FirebaseAuth.instance
