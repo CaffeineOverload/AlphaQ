@@ -295,7 +295,7 @@ packages:
       name: platform
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "2.2.1"
   plugin_platform_interface:
     dependency: "direct main"
     description:
@@ -420,6 +420,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0-nullsafety.3"
+  telephony:
+    dependency: "direct main"
+    description:
+      name: telephony
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.9"
   term_glyph:
     dependency: transitive
     description:

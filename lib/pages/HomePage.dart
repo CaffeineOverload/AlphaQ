@@ -6,6 +6,7 @@ import 'package:clay_containers/clay_containers.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
+import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
@@ -225,6 +226,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         });
                                       },
                                       onTap: () {
+                                        sendSms();
+                                        if (dialEmergencyNumbers) makeCall();
                                         HapticFeedback.lightImpact();
                                         buttonPressed();
                                       },
@@ -418,7 +421,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         color: Colors.red,
                                       ),
                                       title: 'Blood Group',
-                                      value: 'B+',
+                                      value: ''
+                                          '$bloodgroup',
                                     ),
                                     ProfileCard(
                                       height: height,
@@ -440,7 +444,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         color: Colors.blue,
                                       ),
                                       title: 'Age',
-                                      value: '19',
+                                      value: '$age',
                                     ),
                                     ProfileCard(
                                       height: height,
@@ -449,7 +453,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         color: Colors.red,
                                       ),
                                       title: 'Blood Group',
-                                      value: 'B+',
+                                      value: '$bloodgroup',
                                     ),
                                   ],
                                 ),
