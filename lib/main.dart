@@ -1,23 +1,26 @@
+import 'package:emergency_app/data/constants.dart';
+import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/ThemeChanger.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emergency_app/pages/Register.dart';
 import 'package:emergency_app/pages/forgetpass.dart';
 import 'package:emergency_app/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'pages/HomePage.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'pages/Contacts.dart';
+import 'pages/HomePage.dart';
 import 'pages/Settings.dart';
-import 'package:emergency_app/data/constants.dart';
-import 'package:emergency_app/data/data.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
-  SharedPreferences.getInstance().then((prefs) {
+  await Firebase.initializeApp();
+  await SharedPreferences.getInstance().then((prefs) {
     darkMode = prefs.getBool('dark') ?? false;
-    runApp(MyApp());
+    email = prefs.getString('email');
+    password = prefs.getString('password');
   });
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +34,8 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
-            initialRoute: HomePage.id,
+            initialRoute: email != null ? HomePage.id : LoginPage.id,
+
 //             initialRoute: LoginPage.id,
             routes: {
               HomePage.id: (context) => HomePage(),
