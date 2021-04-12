@@ -7,6 +7,7 @@ import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/sendsms.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
@@ -40,6 +41,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _pageState = 0;
   double _yOffset = 0;
   bool _editmode = false;
+  double _animatedHeight = 0;
+  double _animatedWidth = 0;
+  bool timerIsOn = false;
+  Timer time;
+  double percent = 0;
+  int timeInSeconds = 0;
   @override
   void initState() {
     controller = AnimationController(
@@ -204,43 +211,93 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                               //depth: 100,
                               child: Center(
-                                child: ClayContainer(
-                                    height: height * 0.230,
-                                    width: height * 0.230,
-                                    borderRadius: 210,
-                                    depth: buttonDepth.toInt(),
-                                    curveType: CurveType.convex,
-                                    color: baseColor,
-                                    surfaceColor: baseColor,
-                                    child: GestureDetector(
-                                      onLongPress: () {
-                                        HapticFeedback.lightImpact();
-                                        setState(() {
-                                          buttonDepth = 0;
-                                        });
-                                      },
-                                      onLongPressEnd: (LongPressEndDetails
-                                          longPressEndDetails) {
-                                        setState(() {
-                                          buttonDepth = 100;
-                                        });
-                                      },
-                                      onTap: () {
-                                        sendSms();
-                                        if (dialEmergencyNumbers) makeCall();
-                                        HapticFeedback.lightImpact();
-                                        buttonPressed();
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'images/button.png'),
-                                            ),
-                                            shape: BoxShape.circle,
-                                            color: Colors.red),
+
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      height: height * 0.270,
+                                      width: height * 0.270,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        //color: Colors.green
                                       ),
-                                    )),
+                                      child: CircularPercentIndicator(
+                                        radius: height * 0.270,
+                                        animation: true,
+                                        percent: percent,
+                                        animateFromLastPercent: true,
+                                        lineWidth: height * 0.040,
+                                        circularStrokeCap:
+                                            CircularStrokeCap.round,
+                                        backgroundColor: Colors.transparent,
+                                      ),
+                                    ),
+                                    Container(
+                                        height: height * 0.230,
+                                        width: height * 0.230,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: RawMaterialButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              if (!timerIsOn) {
+                                                timerIsOn = true;
+                                                startTimer(time);
+                                              } else {
+                                                timerIsOn=false;
+                                                percent = 0;
+                                              }
+                                            });
+                                          },
+                                          elevation: 10.0,
+                                          fillColor: Colors.red,
+                                          highlightColor: Colors.red[900],
+                                          highlightElevation: 0,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: !(timeInSeconds == 0)
+                                                ? Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                        padding: EdgeInsets.only(top:height* 0.0146),
+                                                        child: Text(timeInSeconds
+                                                            .toString(),
+                                                        style: TextStyle(fontWeight: FontWeight.w600,
+                                                        fontSize: height * 0.080, color: Colors.white),),
+                                                      ),
+                                                      Text('Press to cancel!',
+                                                        style: TextStyle(fontWeight: FontWeight.w600,
+                                                            fontSize: height * 0.02, color: Colors.white),)
+                                                    ],
+                                                  )
+                                                : Container(
+                                                    decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: AssetImage(
+                                                            'images/button.png'),
+                                                      ),
+                                                    ),
+                                                  ),
+                                          ),
+                                          /*Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'images/button.png'),
+                                              ),
+                                            ),
+                                          ),*/
+                                          padding: EdgeInsets.all(15.0),
+                                          shape: CircleBorder(),
+                                        )
+                                        ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -258,61 +315,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       /// Alone Button
                       Padding(
                         padding: const EdgeInsets.only(top: 20),
-                        child: GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            button2Pressed();
-                          },
-                          onLongPress: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              button2Depth = 0;
-                            });
-                          },
-                          onLongPressEnd:
-                              (LongPressEndDetails longPressEndDetails) {
-                            setState(() {
-                              button2Depth = 30;
-                            });
-                          },
-                          child: ClayContainer(
-                            //parentColor: baseColor,
-                            color: baseColor,
-                            surfaceColor: Colors.red,
-                            borderRadius: 15,
-                            depth: button2Depth.toInt(),
-                            //),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                              child: Text(
-                                "I'm Alone.",
-                                style: TextStyle(
-                                    fontSize: 27,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                        child: RawMaterialButton(
+                          onPressed: () {},
+                          elevation: 8.0,
+                          fillColor: Colors.red,
+                          highlightColor: Colors.red[900],
+                          highlightElevation: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            child: Text(
+                              "I'm Alone.",
+                              style: TextStyle(
+                                  fontSize: 27,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),
                             ),
                           ),
+                          padding: EdgeInsets.all(15.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
                         ),
                       ),
-
-                      /// List of cards
-                      /*Container(
-                        height: height * 0.134,
-                        child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: updateCardDataList.length,
-                            itemBuilder: (BuildContext ctxt, int index) {
-                              return UpdatesCard(
-                                  data: updateCardDataList[index]);
-                            }),
-                      ),*/
                     ],
                   ),
-
-                  ///Floating Nav Bar
                 ],
               ),
             ),
@@ -565,26 +590,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  void buttonPressed() {
-    setState(() {
-      buttonDepth = 0;
-      Timer(Duration(milliseconds: 100), () {
-        setState(() {
-          buttonDepth = 100;
-        });
-      });
-    });
-  }
-
-  void button2Pressed() {
-    setState(() {
-      button2Depth = 0;
-      Timer(Duration(milliseconds: 100), () {
-        setState(() {
-          button2Depth = 30;
-        });
-      });
-    });
+  void updateDetails() async {
+    final userdetail = widget.currentUser.user.uid;
+    final detail = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: userdetail)
+        .get();
+    //print(detail.docs.first.data().updateAll((key, value) =>));
   }
 
   changeBlurSigma(int pageState) {
@@ -596,6 +608,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     controller.addListener(() {
       setState(() {});
+    });
+  }
+
+  void startTimer(Timer _time) {
+    timeInSeconds = 5;
+    int time = timeInSeconds * 1000;
+    double milisecPercent = time / 100;
+    Timer(Duration(milliseconds: 0), () {
+      _time = Timer.periodic(Duration(milliseconds: 50), (timer) {
+        setState(() {
+          if (time > 0) {
+            if(!timerIsOn){timer.cancel(); timeInSeconds = 0;}
+            else{
+              time -= 50;
+              if (time % 1000 == 0) {
+                timeInSeconds--;
+                print(timeInSeconds);
+              }
+              if ((time % milisecPercent) == 0) {
+                if (percent < 0.99) {
+                  percent += 0.01;
+                } else {
+                  percent = 1;
+                }
+              }
+            }
+          } else {
+            percent = 0;
+            timer.cancel();
+            timerIsOn =false;
+          }
+        });
+      });
     });
   }
 }

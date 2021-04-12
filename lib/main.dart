@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
             initialRoute: email != null ? HomePage.id : LoginPage.id,
+
 //             initialRoute: LoginPage.id,
             routes: {
               HomePage.id: (context) => HomePage(),
