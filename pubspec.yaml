@@ -37,7 +37,7 @@ dependencies:
   easy_dynamic_theme: any
   provider: any
   url_launcher: any
-  home_widget: any
+  home_widget: ^0.1.2
   quick_actions: any
   plugin_platform_interface: any
   percent_indicator: any
