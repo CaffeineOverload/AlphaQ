@@ -40,6 +40,7 @@ dependencies:
   home_widget: ^0.1.2
   quick_actions: any
   plugin_platform_interface: any
+  percent_indicator: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
