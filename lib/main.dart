@@ -6,6 +6,7 @@ import 'package:emergency_app/pages/forgetpass.dart';
 import 'package:emergency_app/pages/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'pages/Contacts.dart';
@@ -20,7 +21,10 @@ Future<void> main() async {
     email = prefs.getString('email');
     password = prefs.getString('password');
   });
-  runApp(MyApp());
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+    .then((_) {
+      runApp(MyApp());
+    });
 }
 
 class MyApp extends StatelessWidget {

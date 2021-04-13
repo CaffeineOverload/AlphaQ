@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Timer time;
   double percent = 0;
   int timeInSeconds = 0;
+  String nameBuffer = '';
   bool dataRecive = true;
   @override
   void initState() {
@@ -57,6 +58,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     asyncMethod();
     super.initState();
+  }
+
+  String capitalise(String a) {
+    List<String> list = a.split(" ");
+    a = "";
+    for (int i = 0; i < list.length; i++) {
+      a = a + ' ';
+      a = a + list[i][0].toUpperCase() + list[i].substring(1);
+    }
+    return a;
   }
 
   Future<void> asyncMethod() async {
@@ -71,6 +82,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
+    nameBuffer = 'Hello' + capitalise(name);
     setState(() {
       dataRecive = false;
     });
@@ -129,7 +141,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Hello $name! ',
+                                      nameBuffer,
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
