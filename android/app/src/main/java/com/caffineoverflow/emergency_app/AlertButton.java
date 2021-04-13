@@ -24,19 +24,12 @@ public class AlertButton extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         PendingIntent pendingIntent = HomeWidgetLaunchIntent.INSTANCE.getActivity(context,new MainActivity().getClass(),Uri.parse(""));
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.alert_button);
 //        var btn_reset = (ImageView) findViewById(R.id.imageView);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
-//            vibrator.vibrate(50);
-        }
-        else {
-            vibrator.vibrate(50);
-        }
+
         views.setOnClickPendingIntent(R.id.imageView,pendingIntent);
 //        views.setTextViewText(R.id.appwidget_text, widgetText);
         // Instruct the widget manager to update the widget
@@ -48,6 +41,14 @@ public class AlertButton extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
+            final Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK));
+//            vibrator.vibrate(50);
+            }
+            else {
+                vibrator.vibrate(50);
+            }
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
     }
