@@ -1,28 +1,29 @@
 import 'dart:async';
 import 'dart:ui';
+
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:clay_containers/clay_containers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
-import 'Settings.dart';
+import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/services.dart';
-import 'package:emergency_app/models/contacts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:emergency_app/data/constants.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import 'Settings.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
-  final currentUser;
-  HomePage({this.currentUser});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -32,7 +33,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Animation animation;
   TextEditingController nameController = TextEditingController();
 //   String name = 'Susan';
-  final currenUser = null;
   double buttonDepth = 100;
   double button2Depth = 40;
   bool firstvalue = true;
@@ -42,6 +42,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _pageState = 0;
   double _yOffset = 0;
   bool _editmode = false;
+  double _animatedHeight = 0;
+  double _animatedWidth = 0;
+  bool timerIsOn = false;
+  Timer time;
+  double percent = 0;
+  int timeInSeconds = 0;
+  String nameBuffer = '';
+  bool dataRecive = true;
   @override
   void initState() {
     controller = AnimationController(
@@ -50,23 +58,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
     asyncMethod();
     super.initState();
-    if (widget.currentUser != null) {
-      setState(() {
-        //print(widget.currentUser);
-        name = widget.currentUser.user.displayName;
-      });
+  }
+
+  String capitalise(String a) {
+    List<String> list = a.split(" ");
+    a = "";
+    for (int i = 0; i < list.length; i++) {
+      a = a + ' ';
+      a = a + list[i][0].toUpperCase() + list[i].substring(1);
     }
+    return a;
   }
 
   Future<void> asyncMethod() async {
     pref = await SharedPreferences.getInstance();
     //name = pref.getString('userName') ?? '';
-    darkMode = pref.getBool('dark');
-    dialEmergencyNumbers = pref.getBool('emergency');
-    recordAudio = pref.getBool('audio');
-    phraseDetection = pref.getBool('phrase');
+    darkMode = pref.getBool('dark') ?? false;
+    dialEmergencyNumbers = pref.getBool('emergency') ?? false;
+    recordAudio = pref.getBool('audio') ?? false;
+    phraseDetection = pref.getBool('phrase') ?? false;
     contactslist =
         ContactsData.decode((pref.getString('contactsData')) ?? '[]');
+    currentUser = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    name = currentUser.user.displayName;
+    nameBuffer = 'Hello' + capitalise(name);
+    setState(() {
+      dataRecive = false;
+    });
   }
 
   @override
@@ -89,205 +108,260 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     return Scaffold(
       backgroundColor: baseColor,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      ///Top bar
-                      Row(
-                        children: [
-                          Hero(
-                              tag: 'deep',
-                              child: UserAvatar(
-                                size: height * 0.054,
-                                image: AssetImage('images/image.png'),
-                              )),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Hello $name! ',
-                                    style: TextStyle(
-                                      fontSize: width * 0.0381,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey,
-                                      //fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 0,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (_pageState != 1) {
-                                          HapticFeedback.selectionClick();
-                                          changeBlurSigma(_pageState);
-                                          _pageState = 1;
-                                          nameController.text = name;
-                                          _editmode = false;
-                                        }
-                                      });
-                                    },
-                                    child: Text(
-                                      'See Profile',
+      body: ModalProgressHUD(
+        inAsyncCall: dataRecive,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ///Top bar
+                        Row(
+                          children: [
+                            Hero(
+                                tag: 'deep',
+                                child: UserAvatar(
+                                  size: height * 0.054,
+                                  image: AssetImage('images/image.png'),
+                                )),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      nameBuffer,
                                       style: TextStyle(
-                                          fontSize: width * 0.0331,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.red
-                                          //fontWeight: FontWeight.bold),
-                                          ),
+                                        fontSize: width * 0.0381,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey,
+                                        //fontWeight: FontWeight.bold),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      height: 0,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (_pageState != 1) {
+                                            HapticFeedback.selectionClick();
+                                            changeBlurSigma(_pageState);
+                                            _pageState = 1;
+                                            nameController.text = name;
+                                            _editmode = false;
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        'See Profile',
+                                        style: TextStyle(
+                                            fontSize: width * 0.0331,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.red
+                                            //fontWeight: FontWeight.bold),
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: myPopMenu(width, height, context)),
-                          /*Container(
-                            alignment: Alignment.topLeft,
-                            child: myPopMenu(width,height)
-                          ),*/
-                        ],
-                      ),
+                            Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: myPopMenu(width, height, context)),
+                            /*Container(
+                              alignment: Alignment.topLeft,
+                              child: myPopMenu(width,height)
+                            ),*/
+                          ],
+                        ),
 
-                      Padding(
-                        padding: EdgeInsets.only(top: height * 0.07316),
-                        child: Text(
-                          'Emergency help needed?',
+                        Padding(
+                          padding: EdgeInsets.only(top: height * 0.07316),
+                          child: Text(
+                            'Emergency help needed?',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.w700),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+
+                        Text(
+                          'Just press the button',
                           style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.w700),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey),
                           textAlign: TextAlign.center,
                         ),
-                      ),
 
-                      Text(
-                        'Just press the button',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      ),
+                        ///Emergency Button
+                        Padding(
+                          padding: EdgeInsets.all(height * 0.0438),
+                          child: ClayContainer(
+                            color: baseColor,
+                            surfaceColor: baseColor,
+                            height: height * 0.280,
+                            width: height * 0.280,
+                            borderRadius: 130,
+                            curveType: CurveType.convex,
+                            spread: 20,
+                            depth: 30,
+                            child: Center(
+                              child: ClayContainer(
+                                color: baseColor,
+                                surfaceColor: baseColor,
+                                height: height * 0.270,
+                                width: height * 0.270,
+                                borderRadius: 200,
+                                curveType: CurveType.concave,
 
-                      ///Emergency Button
-                      Padding(
-                        padding: EdgeInsets.all(height * 0.0438),
-                        child: ClayContainer(
-                          color: baseColor,
-                          surfaceColor: baseColor,
-                          height: height * 0.280,
-                          width: height * 0.280,
-                          borderRadius: 130,
-                          curveType: CurveType.convex,
-                          spread: 20,
-                          depth: 30,
-                          child: Center(
-                            child: ClayContainer(
-                              color: baseColor,
-                              surfaceColor: baseColor,
-                              height: height * 0.270,
-                              width: height * 0.270,
-                              borderRadius: 200,
-                              curveType: CurveType.concave,
-
-                              //depth: 100,
-                              child: Center(
-                                child: ClayContainer(
-                                    height: height * 0.230,
-                                    width: height * 0.230,
-                                    borderRadius: 210,
-                                    depth: buttonDepth.toInt(),
-                                    curveType: CurveType.convex,
-                                    color: baseColor,
-                                    surfaceColor: baseColor,
-                                    child: GestureDetector(
-                                      onLongPress: () {
-                                        HapticFeedback.lightImpact();
-                                        setState(() {
-                                          buttonDepth = 0;
-                                        });
-                                      },
-                                      onLongPressEnd: (LongPressEndDetails
-                                          longPressEndDetails) {
-                                        setState(() {
-                                          buttonDepth = 100;
-                                        });
-                                      },
-                                      onTap: () {
-                                        HapticFeedback.lightImpact();
-                                        buttonPressed();
-                                      },
-                                      child: Container(
+                                //depth: 100,
+                                child: Center(
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                        height: height * 0.270,
+                                        width: height * 0.270,
                                         decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'images/button.png'),
-                                            ),
-                                            shape: BoxShape.circle,
-                                            color: Colors.red),
+                                          shape: BoxShape.circle,
+                                          //color: Colors.green
+                                        ),
+                                        child: CircularPercentIndicator(
+                                          radius: height * 0.270,
+                                          animation: true,
+                                          percent: percent,
+                                          animateFromLastPercent: true,
+                                          lineWidth: height * 0.040,
+                                          circularStrokeCap:
+                                              CircularStrokeCap.round,
+                                          backgroundColor: Colors.transparent,
+                                        ),
                                       ),
-                                    )),
+                                      Container(
+                                          height: height * 0.230,
+                                          width: height * 0.230,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: RawMaterialButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                if (!timerIsOn) {
+                                                  timerIsOn = true;
+                                                  startTimer(time);
+                                                } else {
+                                                  timerIsOn = false;
+                                                  percent = 0;
+                                                }
+                                              });
+                                            },
+                                            elevation: 10.0,
+                                            fillColor: Colors.red,
+                                            highlightColor: Colors.red[900],
+                                            highlightElevation: 0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: !(timeInSeconds == 0)
+                                                  ? Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: height *
+                                                                      0.0146),
+                                                          child: Text(
+                                                            timeInSeconds
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                fontSize:
+                                                                    height *
+                                                                        0.080,
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          'Press to cancel!',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize:
+                                                                  height * 0.02,
+                                                              color:
+                                                                  Colors.white),
+                                                        )
+                                                      ],
+                                                    )
+                                                  : Container(
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: AssetImage(
+                                                              'images/button.png'),
+                                                        ),
+                                                      ),
+                                                    ),
+                                            ),
+                                            /*Container(
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                      'images/button.png'),
+                                                ),
+                                              ),
+                                            ),*/
+                                            padding: EdgeInsets.all(15.0),
+                                            shape: CircleBorder(),
+                                          )),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
 
-                      Text(
-                        'Feeling Unsafe ?',
-                        style: TextStyle(
-                            //color: Colors.black,
-                            fontSize: height * 0.0282,
-                            fontWeight: FontWeight.w700),
-                      ),
+                        Text(
+                          'Feeling Unsafe ?',
+                          style: TextStyle(
+                              //color: Colors.black,
+                              fontSize: height * 0.0282,
+                              fontWeight: FontWeight.w700),
+                        ),
 
-                      /// Alone Button
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: GestureDetector(
-                          onTap: () {
-                            HapticFeedback.lightImpact();
-                            button2Pressed();
-                          },
-                          onLongPress: () {
-                            HapticFeedback.lightImpact();
-                            setState(() {
-                              button2Depth = 0;
-                            });
-                          },
-                          onLongPressEnd:
-                              (LongPressEndDetails longPressEndDetails) {
-                            setState(() {
-                              button2Depth = 30;
-                            });
-                          },
-                          child: ClayContainer(
-                            //parentColor: baseColor,
-                            color: baseColor,
-                            surfaceColor: Colors.red,
-                            borderRadius: 15,
-                            depth: button2Depth.toInt(),
-                            //),
+                        /// Alone Button
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 8.0,
+                            fillColor: Colors.red,
+                            highlightColor: Colors.red[900],
+                            highlightElevation: 0,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(40, 10, 40, 10),
+                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                               child: Text(
                                 "I'm Alone.",
                                 style: TextStyle(
@@ -296,177 +370,165 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     fontWeight: FontWeight.w500),
                               ),
                             ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
                           ),
                         ),
-                      ),
-
-                      /// List of cards
-                      /*Container(
-                        height: height * 0.134,
-                        child: ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: updateCardDataList.length,
-                            itemBuilder: (BuildContext ctxt, int index) {
-                              return UpdatesCard(
-                                  data: updateCardDataList[index]);
-                            }),
-                      ),*/
-                    ],
-                  ),
-
-                  ///Floating Nav Bar
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          ///Profile Page
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: controller.value * 4,
-                sigmaY: controller.value * 4,
-              ),
-              child: GestureDetector(
-                child: AnimatedContainer(
-                    padding: EdgeInsets.all(20),
-                    duration: Duration(milliseconds: 1000),
-                    curve: Curves.fastLinearToSlowEaseIn,
-                    transform: Matrix4.translationValues(0, _yOffset, 1),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20))),
-                    child: Container(
+            ///Profile Page
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: controller.value * 4,
+                  sigmaY: controller.value * 4,
+                ),
+                child: GestureDetector(
+                  child: AnimatedContainer(
+                      padding: EdgeInsets.all(20),
+                      duration: Duration(milliseconds: 1000),
+                      curve: Curves.fastLinearToSlowEaseIn,
+                      transform: Matrix4.translationValues(0, _yOffset, 1),
                       decoration: BoxDecoration(
-                          //color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      changeBlurSigma(_pageState);
-                                      _pageState = 0;
-                                    });
-                                  },
-                                  child: Icon(
-                                    Icons.keyboard_arrow_down,
-                                    color: Theme.of(context).buttonColor,
-                                    size: height * 0.0355,
-                                  )),
-                              GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _editmode = !_editmode;
-                                      pref.setString('userName', name);
-                                    });
-                                  },
-                                  child: Icon(
-                                    Icons.edit,
-                                    color: _editmode
-                                        ? Colors.green
-                                        : Theme.of(context).buttonColor,
-                                    size: _editmode
-                                        ? height * 0.0355
-                                        : height * 0.0255,
-                                  )),
-                            ],
-                          ),
-                          Center(
-                            child: UserAvatar(
-                              size: height * 0.064,
-                              image: AssetImage('images/image.png'),
-                            ),
-                          ),
-                          Container(
-                            child: TextField(
-                              autofocus: false,
-                              textAlign: TextAlign.center,
-                              readOnly: _editmode ? false : true,
-                              style: TextStyle(
-                                  fontSize: height * 0.0226,
-                                  fontWeight: FontWeight.w600),
-                              keyboardType: TextInputType.name,
-                              //textInputAction: TextInputAction.continueAction,
-                              controller: nameController,
-                              onChanged: (value) {
-                                setState(() {
-                                  //controller.text = value;
-                                  name = value;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Enter Name',
-                                hintStyle: TextStyle(
-                                    fontSize: height * 0.0186,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            //height: 400,
-                            child: Column(
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    ProfileCard(
-                                      height: height,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.tint,
-                                        color: Colors.red,
-                                      ),
-                                      title: 'Blood Group',
-                                      value: 'B+',
-                                    ),
-                                    ProfileCard(
-                                      height: height,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.clipboard,
-                                        color: Colors.yellow[600],
-                                      ),
-                                      title: 'Diseases',
-                                      value: 'Na',
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    ProfileCard(
-                                      height: height,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.userAlt,
-                                        color: Colors.blue,
-                                      ),
-                                      title: 'Age',
-                                      value: '19',
-                                    ),
-                                    ProfileCard(
-                                      height: height,
-                                      icon: FaIcon(
-                                        FontAwesomeIcons.tint,
-                                        color: Colors.red,
-                                      ),
-                                      title: 'Blood Group',
-                                      value: 'B+',
-                                    ),
-                                  ],
-                                ),
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20))),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            //color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        changeBlurSigma(_pageState);
+                                        _pageState = 0;
+                                      });
+                                    },
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: Theme.of(context).buttonColor,
+                                      size: height * 0.0355,
+                                    )),
+                                GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _editmode = !_editmode;
+                                        //pref.setString('userName', name);
+                                      });
+                                    },
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: _editmode
+                                          ? Colors.green
+                                          : Theme.of(context).buttonColor,
+                                      size: _editmode
+                                          ? height * 0.0355
+                                          : height * 0.0255,
+                                    )),
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    )
+                            Center(
+                              child: UserAvatar(
+                                size: height * 0.064,
+                                image: AssetImage('images/image.png'),
+                              ),
+                            ),
+                            Container(
+                              child: TextField(
+                                autofocus: false,
+                                textAlign: TextAlign.center,
+                                readOnly: _editmode ? false : true,
+                                style: TextStyle(
+                                    fontSize: height * 0.0226,
+                                    fontWeight: FontWeight.w600),
+                                keyboardType: TextInputType.name,
+                                //textInputAction: TextInputAction.continueAction,
+                                controller: nameController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    //controller.text = value;
+                                    name = value;
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter Name',
+                                  hintStyle: TextStyle(
+                                      fontSize: height * 0.0186,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              //height: 400,
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: [
+                                      ProfileCard(
+                                        height: height,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.tint,
+                                          color: Colors.red,
+                                        ),
+                                        title: 'Blood Group',
+                                        value: ''
+                                            '$bloodgroup',
+                                      ),
+                                      ProfileCard(
+                                        height: height,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.clipboard,
+                                          color: Colors.yellow[600],
+                                        ),
+                                        title: 'Diseases',
+                                        value: 'Na',
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      ProfileCard(
+                                        height: height,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.userAlt,
+                                          color: Colors.blue,
+                                        ),
+                                        title: 'Age',
+                                        value: '$age',
+                                      ),
+                                      ProfileCard(
+                                        height: height,
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.tint,
+                                          color: Colors.red,
+                                        ),
+                                        title: 'Blood Group',
+                                        value: '$bloodgroup',
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
 
-                    /*GridView.builder(
+                      /*GridView.builder(
     itemCount: images.length,
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
     crossAxisCount: 2,
@@ -477,11 +539,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Image.network(images[index]);
     },
     ),*/
-                    ),
+                      ),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
         //margin: EdgeInsets.all(5),
@@ -567,37 +630,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
   }
 
-  void buttonPressed() {
-    setState(() {
-      buttonDepth = 0;
-      Timer(Duration(milliseconds: 100), () {
-        setState(() {
-          buttonDepth = 100;
-        });
-      });
-    });
-  }
-
-  void button2Pressed() {
-    setState(() {
-      button2Depth = 0;
-      Timer(Duration(milliseconds: 100), () {
-        setState(() {
-          button2Depth = 30;
-        });
-      });
-    });
-  }
-
-  void updateDetails() async {
-    final userdetail = widget.currentUser.user.uid;
-    final detail = await FirebaseFirestore.instance
-        .collection('users')
-        .where('uid', isEqualTo: userdetail)
-        .get();
-    //print(detail.docs.first.data().updateAll((key, value) =>));
-  }
-
   changeBlurSigma(int pageState) {
     if (pageState == 0) {
       controller.forward();
@@ -607,6 +639,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
     controller.addListener(() {
       setState(() {});
+    });
+  }
+
+  void startTimer(Timer _time) {
+    timeInSeconds = 5;
+    int time = timeInSeconds * 1000;
+    double milisecPercent = time / 100;
+    Timer(Duration(milliseconds: 0), () {
+      _time = Timer.periodic(Duration(milliseconds: 50), (timer) {
+        setState(() {
+          if (time > 0) {
+            if (!timerIsOn) {
+              timer.cancel();
+              timeInSeconds = 0;
+            } else {
+              time -= 50;
+              if (time % 1000 == 0) {
+                timeInSeconds--;
+                print(timeInSeconds);
+              }
+              if ((time % milisecPercent) == 0) {
+                if (percent < 0.99) {
+                  percent += 0.01;
+                } else {
+                  percent = 1;
+                }
+              }
+            }
+          } else {
+            percent = 0;
+            timer.cancel();
+            timerIsOn = false;
+          }
+        });
+      });
     });
   }
 }
