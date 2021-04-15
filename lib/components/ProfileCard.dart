@@ -5,14 +5,18 @@ class ProfileCard extends StatelessWidget {
   const ProfileCard({
     @required this.height,
   @required this.title,
-  @required this.value,
-  @required this.icon
+  @required this.icon,
+    @required this.editmode,
+    @required this.controller,
+    @required this.onChanged,
   });
 
   final double height;
   final String title;
-  final String value;
   final FaIcon icon;
+  final bool editmode;
+  final TextEditingController controller;
+  final Function onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +44,35 @@ class ProfileCard extends StatelessWidget {
             ),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: Text(value,
+                child: TextField(
+                  autofocus: false,
+                  textAlign: TextAlign.left,
+                  readOnly: editmode ? false : true,
                   style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: height*0.0301
-                  ),),
+                  ),
+                  keyboardType: TextInputType.name,
+                  //textInputAction: TextInputAction.continueAction,
+                  controller: controller,
+                  onChanged: onChanged/*(value) {
+                    setState(() {
+                      //controller.text = value;
+                      name = value;
+                    });
+                  }*/,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Enter $title',
+                    hintStyle: TextStyle(
+                        fontSize: height * 0.0186,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),/*Text(value,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: height*0.0301
+                  ),),*/
               ),],
           ),
           decoration: BoxDecoration(

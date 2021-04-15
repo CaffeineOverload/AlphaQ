@@ -93,7 +93,6 @@ class _ForgetPassState extends State<ForgetPass> {
             )
           ]).show();
     } catch (e) {
-      // TODO
       showError(context, e);
     }
     setState(() {

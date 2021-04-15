@@ -8,7 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'pages/alone.dart';
 import 'pages/Contacts.dart';
 import 'pages/HomePage.dart';
 import 'pages/Settings.dart';
@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
 
 //             initialRoute: LoginPage.id,
             routes: {
+              AlonePage.id: (context) => AlonePage(),
               HomePage.id: (context) => HomePage(),
               ContactsPage.id: (context) => ContactsPage(),
               SettingPage.id: (context) => SettingPage(),
