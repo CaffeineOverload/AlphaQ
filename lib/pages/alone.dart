@@ -166,7 +166,7 @@ class _AlonePageState extends State<AlonePage> {
                                                   padding:
                                                   EdgeInsets.only(
                                                       top: height *
-                                                          0.0196),
+                                                          0.0276),
                                                   child: Text(
                                                     "${seconds~/60}:${seconds%60}"
                                                         .toString(),
@@ -176,7 +176,7 @@ class _AlonePageState extends State<AlonePage> {
                                                             .w600,
                                                         fontSize:
                                                         height *
-                                                            0.070,
+                                                            0.060,
                                                         color: Colors
                                                             .white),
                                                   ),

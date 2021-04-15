@@ -9,6 +9,7 @@ class ProfileCard extends StatelessWidget {
     @required this.editmode,
     @required this.controller,
     @required this.onChanged,
+    this.keyboardType = TextInputType.name,
   });
 
   final double height;
@@ -17,6 +18,7 @@ class ProfileCard extends StatelessWidget {
   final bool editmode;
   final TextEditingController controller;
   final Function onChanged;
+  final TextInputType keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class ProfileCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                       fontSize: height*0.0301
                   ),
-                  keyboardType: TextInputType.name,
+                  keyboardType: keyboardType,
                   //textInputAction: TextInputAction.continueAction,
                   controller: controller,
                   onChanged: onChanged/*(value) {

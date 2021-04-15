@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
         prefs.setString('email', Email);
         prefs.setString('password', Password);
       });
-      Navigator.pushNamed(context, HomePage.id);
+      Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e)=>false);
     } catch (e) {
       print(e);
       showError(context, e);
