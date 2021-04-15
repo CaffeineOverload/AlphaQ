@@ -8,6 +8,7 @@ import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
+import 'package:emergency_app/pages/alone.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:emergency_app/models/contacts.dart';
@@ -19,7 +20,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:emergency_app/pages/alone.dart';
 import 'Settings.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,6 +33,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   AnimationController controller;
   Animation animation;
   TextEditingController nameController = TextEditingController();
+  TextEditingController bloodController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController diseaseController = TextEditingController();
+  TextEditingController allergiesController = TextEditingController();
 //   String name = 'Susan';
   double buttonDepth = 100;
   double button2Depth = 40;
@@ -48,7 +53,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Timer time;
   double percent = 0;
   int timeInSeconds = 0;
-  String nameBuffer = '';
   bool dataRecive = true;
   @override
   void initState() {
@@ -74,15 +78,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref = await SharedPreferences.getInstance();
     //name = pref.getString('userName') ?? '';
     darkMode = pref.getBool('dark') ?? false;
+    bloodgroup = pref.getString('bloodgroup') ?? 'Na';
+    age = pref.getString('age') ?? 'Na';
+    diseases = pref.getString('diseases') ?? 'Na';
     dialEmergencyNumbers = pref.getBool('emergency') ?? false;
     recordAudio = pref.getBool('audio') ?? false;
     phraseDetection = pref.getBool('phrase') ?? false;
+    contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist =
-        ContactsData.decode((pref.getString('contactsData')) ?? '[]');
+        ContactsData.decode(contactslistdata);
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
-    nameBuffer = 'Hello' + capitalise(name);
     setState(() {
       dataRecive = false;
     });
@@ -95,6 +102,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     currentDisplaySize.height = height;
     currentDisplaySize.width = width;
+    //nameBuffer = 'Hello' + name;
     switch (_pageState) {
       case 0:
         _yOffset = height;
@@ -109,6 +117,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: baseColor,
       body: ModalProgressHUD(
+        opacity: 1,
+        color: baseColor,
         inAsyncCall: dataRecive,
         child: Stack(
           fit: StackFit.expand,
@@ -141,7 +151,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      nameBuffer,
+                                      name==null?'':'Hello ${name.trim().split(' ').first}',
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
@@ -160,6 +170,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             changeBlurSigma(_pageState);
                                             _pageState = 1;
                                             nameController.text = name;
+                                            bloodController.text = bloodgroup;
+                                            diseaseController.text = diseases;
+                                            ageController.text = age;
                                             _editmode = false;
                                           }
                                         });
@@ -208,134 +221,137 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
 
                         ///Emergency Button
-                        Padding(
-                          padding: EdgeInsets.all(height * 0.0438),
-                          child: ClayContainer(
-                            color: baseColor,
-                            surfaceColor: baseColor,
-                            height: height * 0.280,
-                            width: height * 0.280,
-                            borderRadius: 130,
-                            curveType: CurveType.convex,
-                            spread: 20,
-                            depth: 30,
-                            child: Center(
-                              child: ClayContainer(
-                                color: baseColor,
-                                surfaceColor: baseColor,
-                                height: height * 0.270,
-                                width: height * 0.270,
-                                borderRadius: 200,
-                                curveType: CurveType.concave,
+                        Hero(
+                          tag: "emergency",
+                          child: Padding(
+                            padding: EdgeInsets.all(height * 0.0438),
+                            child: ClayContainer(
+                              color: baseColor,
+                              surfaceColor: baseColor,
+                              height: height * 0.280,
+                              width: height * 0.280,
+                              borderRadius: 130,
+                              curveType: CurveType.convex,
+                              spread: 20,
+                              depth: 30,
+                              child: Center(
+                                child: ClayContainer(
+                                  color: baseColor,
+                                  surfaceColor: baseColor,
+                                  height: height * 0.270,
+                                  width: height * 0.270,
+                                  borderRadius: 200,
+                                  curveType: CurveType.concave,
 
-                                //depth: 100,
-                                child: Center(
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Container(
-                                        height: height * 0.270,
-                                        width: height * 0.270,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          //color: Colors.green
-                                        ),
-                                        child: CircularPercentIndicator(
-                                          radius: height * 0.270,
-                                          animation: true,
-                                          percent: percent,
-                                          animateFromLastPercent: true,
-                                          lineWidth: height * 0.040,
-                                          circularStrokeCap:
-                                              CircularStrokeCap.round,
-                                          backgroundColor: Colors.transparent,
-                                        ),
-                                      ),
-                                      Container(
-                                          height: height * 0.230,
-                                          width: height * 0.230,
+                                  //depth: 100,
+                                  child: Center(
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          height: height * 0.270,
+                                          width: height * 0.270,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
+                                            //color: Colors.green
                                           ),
-                                          child: RawMaterialButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                if (!timerIsOn) {
-                                                  timerIsOn = true;
-                                                  startTimer(time);
-                                                } else {
-                                                  timerIsOn = false;
-                                                  percent = 0;
-                                                }
-                                              });
-                                            },
-                                            elevation: 10.0,
-                                            fillColor: Colors.red,
-                                            highlightColor: Colors.red[900],
-                                            highlightElevation: 0,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: !(timeInSeconds == 0)
-                                                  ? Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: height *
-                                                                      0.0146),
-                                                          child: Text(
-                                                            timeInSeconds
-                                                                .toString(),
+                                          child: CircularPercentIndicator(
+                                            radius: height * 0.270,
+                                            animation: true,
+                                            percent: percent,
+                                            animateFromLastPercent: true,
+                                            lineWidth: height * 0.040,
+                                            circularStrokeCap:
+                                                CircularStrokeCap.round,
+                                            backgroundColor: Colors.transparent,
+                                          ),
+                                        ),
+                                        Container(
+                                            height: height * 0.230,
+                                            width: height * 0.230,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: RawMaterialButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  if (!timerIsOn) {
+                                                    timerIsOn = true;
+                                                    startTimer(time);
+                                                  } else {
+                                                    timerIsOn = false;
+                                                    percent = 0;
+                                                  }
+                                                });
+                                              },
+                                              elevation: 10.0,
+                                              fillColor: Colors.red,
+                                              highlightColor: Colors.red[900],
+                                              highlightElevation: 0,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: !(timeInSeconds == 0)
+                                                    ? Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: height *
+                                                                        0.0146),
+                                                            child: Text(
+                                                              timeInSeconds
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize:
+                                                                      height *
+                                                                          0.080,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            'Press to cancel!',
                                                             style: TextStyle(
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w600,
                                                                 fontSize:
-                                                                    height *
-                                                                        0.080,
-                                                                color: Colors
-                                                                    .white),
+                                                                    height * 0.02,
+                                                                color:
+                                                                    Colors.white),
+                                                          )
+                                                        ],
+                                                      )
+                                                    : Container(
+                                                        decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                            image: AssetImage(
+                                                                'images/button.png'),
                                                           ),
                                                         ),
-                                                        Text(
-                                                          'Press to cancel!',
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize:
-                                                                  height * 0.02,
-                                                              color:
-                                                                  Colors.white),
-                                                        )
-                                                      ],
-                                                    )
-                                                  : Container(
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: AssetImage(
-                                                              'images/button.png'),
-                                                        ),
                                                       ),
-                                                    ),
-                                            ),
-                                            /*Container(
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  image: AssetImage(
-                                                      'images/button.png'),
-                                                ),
                                               ),
-                                            ),*/
-                                            padding: EdgeInsets.all(15.0),
-                                            shape: CircleBorder(),
-                                          )),
-                                    ],
+                                              /*Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage(
+                                                        'images/button.png'),
+                                                  ),
+                                                ),
+                                              ),*/
+                                              padding: EdgeInsets.all(15.0),
+                                              shape: CircleBorder(),
+                                            )),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -352,27 +368,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
 
                         /// Alone Button
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: RawMaterialButton(
-                            onPressed: () {},
-                            elevation: 8.0,
-                            fillColor: Colors.red,
-                            highlightColor: Colors.red[900],
-                            highlightElevation: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                              child: Text(
-                                "I'm Alone.",
-                                style: TextStyle(
-                                    fontSize: 27,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
+                        Hero(
+                          tag:'red button',
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: RawMaterialButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, AlonePage.id);
+                              },
+                              elevation: 8.0,
+                              fillColor: Colors.red,
+                              highlightColor: Colors.red[900],
+                              highlightElevation: 0,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                child: Text(
+                                  "I'm Alone.",
+                                  style: TextStyle(
+                                      fontSize: 27,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
+                              padding: EdgeInsets.all(15.0),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
                             ),
-                            padding: EdgeInsets.all(15.0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
                           ),
                         ),
                       ],
@@ -422,22 +443,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       color: Theme.of(context).buttonColor,
                                       size: height * 0.0355,
                                     )),
-                                GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _editmode = !_editmode;
-                                        //pref.setString('userName', name);
-                                      });
-                                    },
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: _editmode
-                                          ? Colors.green
-                                          : Theme.of(context).buttonColor,
-                                      size: _editmode
-                                          ? height * 0.0355
-                                          : height * 0.0255,
-                                    )),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: (){
+                                    setState(() {
+                                      _editmode = !_editmode;
+                                      if(!_editmode){
+                                        updatePrefs();
+                                        ///TODO: update data on firebase
+                                      }
+                                       //updateDetails();
+                                      //pref.setString('userName', name);
+                                    });
+                                  },
+                                  icon:Icon(Icons.edit,
+                                  color: _editmode
+                                      ? Colors.green
+                                      : Theme.of(context).buttonColor,
+                                  size: _editmode
+                                      ? height * 0.0355
+                                      : height * 0.0255,)
+                                ),
                               ],
                             ),
                             Center(
@@ -485,8 +511,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           color: Colors.red,
                                         ),
                                         title: 'Blood Group',
-                                        value: ''
-                                            '$bloodgroup',
+                                        controller: bloodController,
+                                        onChanged: (value){
+                                          setState(() {
+                                            //controller.text = value;
+                                            bloodgroup = value;
+                                          });
+                                        },
+                                        editmode: _editmode,
                                       ),
                                       ProfileCard(
                                         height: height,
@@ -495,7 +527,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           color: Colors.yellow[600],
                                         ),
                                         title: 'Diseases',
-                                        value: 'Na',
+                                        controller: diseaseController,
+                                        onChanged: (value){
+                                          setState(() {
+                                            //controller.text = value;
+                                            diseases = value;
+                                          });
+                                        },
+                                        editmode: _editmode,
                                       ),
                                     ],
                                   ),
@@ -508,16 +547,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           color: Colors.blue,
                                         ),
                                         title: 'Age',
-                                        value: '$age',
+                                        controller: ageController,
+                                        onChanged: (value){
+                                          setState(() {
+                                            //controller.text = value;
+                                            age = value;
+                                          });
+                                        },
+                                        editmode: _editmode,
                                       ),
                                       ProfileCard(
                                         height: height,
                                         icon: FaIcon(
-                                          FontAwesomeIcons.tint,
-                                          color: Colors.red,
+                                          FontAwesomeIcons.bacteria,
+                                          color: Colors.green,
                                         ),
-                                        title: 'Blood Group',
-                                        value: '$bloodgroup',
+                                        title: 'Allergies',
+                                        controller: allergiesController,
+                                        onChanged: (value){
+                                          setState(() {
+                                            //controller.text = value;
+                                            allergies = value;
+                                          });
+                                        },
+                                        editmode: _editmode,
                                       ),
                                     ],
                                   ),
@@ -659,11 +712,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 timeInSeconds--;
                 print(timeInSeconds);
               }
-              if ((time % milisecPercent) == 0) {
+              if ((time % milisecPercent).toInt() == 0) {
                 if (percent < 0.99) {
                   percent += 0.01;
                 } else {
                   percent = 1;
+                  ///TODO: send sms
                 }
               }
             }
@@ -676,4 +730,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       });
     });
   }
+
+  void updatePrefs() {
+    pref.setString('bloodgroup', bloodgroup);
+    pref.setString('age', age);
+    pref.setString('name', name);
+    pref.setString('diseases', diseases);
+    pref.setString('allergies', allergies);
+    print('pref updated!');
+  }
+
 }

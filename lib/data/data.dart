@@ -29,11 +29,14 @@ UserCredential currentUser;
 String email;
 String password;
 List<ContactsData> contactslist = [];
+String contactslistdata = '[]';
 Future<void> updateDetails() async {
   SharedPreferences.getInstance().then((prefs) {
     prefs.setString('bloodgroup', bloodgroup);
     prefs.setString('age', age);
     prefs.setString('name', name);
+    prefs.setString('diseases', diseases);
+    prefs.setString('allergies', allergies);
   });
   await FirebaseFirestore.instance
       .collection('users')
@@ -41,8 +44,8 @@ Future<void> updateDetails() async {
       .set({
     'bloodgroup': bloodgroup,
     'age': age,
-    'contacts': [],
-    'diseases': [],
+    'contacts': contactslistdata,
+    'diseases': diseases, ///TODO: add allergies
     'name': name,
     'imageurl': '',
   });
@@ -62,3 +65,4 @@ bool darkMode = false;
 bool dialEmergencyNumbers = false;
 bool recordAudio = false;
 bool phraseDetection = false;
+String allergies;
