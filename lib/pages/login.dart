@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
@@ -43,11 +44,20 @@ class _LoginPageState extends State<LoginPage> {
                     Email = value;
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
                     labelText: 'Email',
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Email',
+                    labelStyle: TextStyle(color: Colors.red),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                   ),
+
                 ),
                 SizedBox(
                   height: 20,
@@ -59,7 +69,16 @@ class _LoginPageState extends State<LoginPage> {
                     Password = value;
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Password',
+                    labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Password',
+
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
@@ -77,15 +96,18 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.all(Radius.circular(20)),
                         ),
                         child: FlatButton(
-                          onPressed: () {
+                          onPressed: () async {
                             setState(() {
                               showSpinner = true;
                             });
                             _getuser();
+                            setState(() {
+                              showSpinner = false;
+                            });
                           },
                           child: Text(
                             "Login",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -102,10 +124,11 @@ class _LoginPageState extends State<LoginPage> {
                         child: FlatButton(
                           onPressed: () {
                             Navigator.pushNamed(context, RegisterPage.id);
+                            ///TODO: get details user details(disease, allergies etc) from firebase and store in pref
                           },
                           child: Text(
                             "Register",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -119,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text(
                     'Forget Password?',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.red),
                   ),
                 )
               ],

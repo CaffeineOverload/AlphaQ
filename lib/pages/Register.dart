@@ -21,6 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
         progressIndicator: CircularProgressIndicator(
@@ -30,14 +31,23 @@ class _RegisterPageState extends State<RegisterPage> {
           padding: const EdgeInsets.all(20.0),
           child: Center(
             child: ListView(
+              physics: BouncingScrollPhysics(),
               shrinkWrap: true,
               children: [
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
-                    name = value;
+                    name = capitalise(value);
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Full Name',
+                    labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Name',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -51,6 +61,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     Email = value;
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Email',
+                    labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Email',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -66,6 +84,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     Password = value;
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Password',
+                    labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Password',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -79,6 +105,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     age = value;
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Age',
+                    labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Age',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -91,7 +125,55 @@ class _RegisterPageState extends State<RegisterPage> {
                     bloodgroup = value;
                   },
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Enter Your Blood Group',
+                    labelStyle: TextStyle(color: Colors.red),
                     labelText: 'BloodGroup',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  onChanged: (value) {
+                    diseases = value;
+                  },
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Mention if you have any chronic disease',
+                    labelStyle: TextStyle(color: Colors.red),
+                    labelText: 'Diseases',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextField(
+                  onChanged: (value) {
+                    allergies = value;
+                  },
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                      BorderSide(color: Colors.red, width: 2.0),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintText: 'Mention if you any allergies',
+                    labelStyle: TextStyle(color: Colors.red),
+                    labelText: 'Allergies',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
@@ -114,10 +196,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     child: Text(
                       "Register",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
+
               ],
             ),
           ),
@@ -148,19 +231,27 @@ class _RegisterPageState extends State<RegisterPage> {
           .set({
         'bloodgroup': bloodgroup,
         'age': age,
-        'contacts': [],
-        'diseases': [],
+        'contacts': '',
+        'diseases': diseases,///TODO: add allergies
         'name': name,
         'imageurl': '',
       });
       Navigator.pushNamed(context, HomePage.id);
     } catch (e) {
-      // TODO
       print(e);
       showError(context, e);
     }
     setState(() {
       showSpinner = false;
     });
+  }
+  String capitalise(String a) {
+    List<String> list = a.split(" ");
+    a = "";
+    for (int i = 0; i < list.length; i++) {
+      a = a + ' ';
+      a = a + list[i][0].toUpperCase() + list[i].substring(1);
+    }
+    return a;
   }
 }

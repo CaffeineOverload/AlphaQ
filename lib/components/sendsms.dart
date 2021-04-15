@@ -10,7 +10,7 @@ void sendSms() async {
 
   for (int i = 0; i < contactslist.length; i++) {
     String content =
-        'Hi ${contactslist[i].name} your friend $name is in danger please help him';
+        'Hi ${contactslist[i].name}, your friend $name is in danger please help him';
     await telephony.sendSms(
         to: contactslist[i].number, message: content, statusListener: listener);
   }

@@ -34,9 +34,9 @@ class ContactsData{
           .toList();
 
   static void updateContactsListInPref(SharedPreferences pref){
-    String temp = encode(contactslist);
-    print(temp);
-    pref.setString('contactsData', temp);
+    contactslistdata = encode(contactslist);
+    print(contactslistdata);
+    pref.setString('contactsData', contactslistdata);
   }
 
   static bool contactIfExist(ContactsData contact){

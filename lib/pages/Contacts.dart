@@ -27,7 +27,6 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -79,49 +78,53 @@ class _ContactsPageState extends State<ContactsPage> {
                       ),
 
                       /// Add Button
-                      if(contactslist.length < 5) Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            if(contactslist.length < 5){
-                              HapticFeedback.lightImpact();
-                              buttonPressed();
-                              try {
-                                await FlutterContactPicker.requestPermission();
-                                if (await FlutterContactPicker
-                                    .hasPermission()) {
-                                  PhoneContact contacts =
-                                      await FlutterContactPicker
-                                          .pickPhoneContact();
-                                  ContactsData temp = ContactsData(
-                                      name: contacts.fullName,
-                                      number: contacts.phoneNumber.number
-                                          .toString());
-                                  if(!ContactsData.contactIfExist(temp)) {
-                                      setState(() {
-                                        contactslist.add(temp);
-                                      });
+                      if(contactslist.length < 5) Hero(
+                        tag: 'emergency',
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () async {
+                              if(contactslist.length < 5){
+                                HapticFeedback.lightImpact();
+                                buttonPressed();
+                                try {
+                                  await FlutterContactPicker.requestPermission();
+                                  if (await FlutterContactPicker
+                                      .hasPermission()) {
+                                    PhoneContact contacts =
+                                        await FlutterContactPicker
+                                            .pickPhoneContact();
+                                    ContactsData temp = ContactsData(
+                                        name: contacts.fullName,
+                                        number: contacts.phoneNumber.number
+                                            .toString());
+                                    if(!ContactsData.contactIfExist(temp)) {
+                                        setState(() {
+                                          contactslist.add(temp);
+                                        });
+                                      }
                                     }
-                                  }
-                              } on Exception catch (_) {
-                                print("throwing new error");
-                                throw Exception("Can't add contacts");
+                                } on Exception catch (_) {
+                                  print("throwing new error");
+                                  throw Exception("Can't add contacts");
+                                }
+                                ContactsData.updateContactsListInPref(pref);
+                                ///TODO: update data on firebase
                               }
-                              ContactsData.updateContactsListInPref(pref);
-                            }
-                          },
-                          child: ClayContainer(
-                              color: baseColor,
-                              surfaceColor: baseColor,
-                              depth: buttonDepth.toInt(),
-                              spread: 10,
-                              borderRadius: 100,
-                              height: currentDisplaySize.width * 0.1025,
-                              width: currentDisplaySize.width * 0.1025,
-                              child: Icon(
-                                Icons.add,
-                                size: currentDisplaySize.width * 0.07692,
-                              )),
+                            },
+                            child: ClayContainer(
+                                color: baseColor,
+                                surfaceColor: baseColor,
+                                depth: buttonDepth.toInt(),
+                                spread: 10,
+                                borderRadius: 100,
+                                height: currentDisplaySize.width * 0.1025,
+                                width: currentDisplaySize.width * 0.1025,
+                                child: Icon(
+                                  Icons.add,
+                                  size: currentDisplaySize.width * 0.07692,
+                                )),
+                          ),
                         ),
                       ),
                     ],
