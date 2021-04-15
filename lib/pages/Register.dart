@@ -16,6 +16,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   String Email;
   String Password;
+  String tempBlood;
   bool showSpinner = false;
   final _auth = FirebaseAuth.instance;
   @override
@@ -120,7 +121,57 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                TextField(
+                Container(
+                   // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    /*BoxDecoration(
+                        //color: Colors.white,
+                        border: Border.all(
+                            color: Colors.grey, style: BorderStyle.solid, width: 1),
+                        borderRadius: BorderRadius.circular(20)),*/
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      contentPadding:  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      labelText: 'Blood Group',
+                      labelStyle: TextStyle(color: Colors.red),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        hint: Text("Select your Blood Group", style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.w300)),
+                          dropdownColor: Theme.of(context).backgroundColor,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.red,
+                          ),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            //fontWeight: FontWeight.bold),
+                          ),
+                          items: [
+                            DpItem(context, 'A+'),
+                            DpItem(context, 'A-'),
+                            DpItem(context, 'B+'),
+                            DpItem(context, 'B-'),
+                            DpItem(context, 'AB+'),
+                            DpItem(context, 'AB-'),
+                            DpItem(context, 'O+'),
+                            DpItem(context, 'O-'),
+                          ],
+                          value: tempBlood,
+                          onChanged: (value) {
+                            setState(() {
+                              tempBlood = value;
+                              print(tempBlood);
+                            });
+                          }),
+                    ),
+                  ),
+                ),
+                /*TextField(
                   onChanged: (value) {
                     bloodgroup = value;
                   },
@@ -138,7 +189,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                   ),
-                ),
+                ),*/
                 SizedBox(height: 20),
                 TextField(
                   onChanged: (value) {
@@ -209,6 +260,15 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  DropdownMenuItem<String> DpItem(BuildContext context, String text) {
+    return DropdownMenuItem(
+                          child: Container(
+                            child: Text(text, style: TextStyle(color: Theme.of(context).buttonColor, fontSize: 16, fontWeight: FontWeight.w300),),
+                          ),
+                          value: text,
+                        );
+  }
+
   Future<void> _createuser() async {
     try {
       final currentuser = await _auth.createUserWithEmailAndPassword(
@@ -216,6 +276,7 @@ class _RegisterPageState extends State<RegisterPage> {
       await currentuser.user.updateProfile(
         displayName: name,
       );
+      bloodgroup = tempBlood;
       SharedPreferences.getInstance().then((prefs) {
         email = Email;
         password = Password;
@@ -236,7 +297,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'name': name,
         'imageurl': '',
       });
-      Navigator.pushNamed(context, HomePage.id);
+      Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e)=>false);
     } catch (e) {
       print(e);
       showError(context, e);

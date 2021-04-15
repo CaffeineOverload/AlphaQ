@@ -81,12 +81,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     bloodgroup = pref.getString('bloodgroup') ?? 'Na';
     age = pref.getString('age') ?? 'Na';
     diseases = pref.getString('diseases') ?? 'Na';
+    allergies = pref.getString('allergies') ?? 'Na';
     dialEmergencyNumbers = pref.getBool('emergency') ?? false;
     recordAudio = pref.getBool('audio') ?? false;
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
-    contactslist =
-        ContactsData.decode(contactslistdata);
+    contactslist = ContactsData.decode(contactslistdata);
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
@@ -151,7 +151,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      name==null?'':'Hello ${name.trim().split(' ').first}',
+                                      name == null
+                                          ? ''
+                                          : 'Hello ${name.trim().split(' ').first}',
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
@@ -324,15 +326,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                     FontWeight
                                                                         .w600,
                                                                 fontSize:
-                                                                    height * 0.02,
-                                                                color:
-                                                                    Colors.white),
+                                                                    height *
+                                                                        0.02,
+                                                                color: Colors
+                                                                    .white),
                                                           )
                                                         ],
                                                       )
                                                     : Container(
-                                                        decoration: BoxDecoration(
-                                                          image: DecorationImage(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
                                                             image: AssetImage(
                                                                 'images/button.png'),
                                                           ),
@@ -369,7 +374,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                         /// Alone Button
                         Hero(
-                          tag:'red button',
+                          tag: 'red button',
                           child: Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: RawMaterialButton(
@@ -381,7 +386,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               highlightColor: Colors.red[900],
                               highlightElevation: 0,
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                padding:
+                                    const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                 child: Text(
                                   "I'm Alone.",
                                   style: TextStyle(
@@ -444,26 +450,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       size: height * 0.0355,
                                     )),
                                 IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: (){
-                                    setState(() {
-                                      _editmode = !_editmode;
-                                      if(!_editmode){
-                                        updatePrefs();
-                                        ///TODO: update data on firebase
-                                      }
-                                       //updateDetails();
-                                      //pref.setString('userName', name);
-                                    });
-                                  },
-                                  icon:Icon(Icons.edit,
-                                  color: _editmode
-                                      ? Colors.green
-                                      : Theme.of(context).buttonColor,
-                                  size: _editmode
-                                      ? height * 0.0355
-                                      : height * 0.0255,)
-                                ),
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {
+                                      setState(() {
+                                        _editmode = !_editmode;
+                                        if (!_editmode) {
+                                          updatePrefs();
+
+                                          ///TODO: update data on firebase
+                                        }
+                                        //updateDetails();
+                                        //pref.setString('userName', name);
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: _editmode
+                                          ? Colors.green
+                                          : Theme.of(context).buttonColor,
+                                      size: _editmode
+                                          ? height * 0.0355
+                                          : height * 0.0255,
+                                    )),
                               ],
                             ),
                             Center(
@@ -504,7 +512,100 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   Row(
                                     children: [
-                                      ProfileCard(
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            //height: 200,
+                                            //width: 150,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Blood Group",
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                      softWrap: true,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize:
+                                                              height * 0.0201),
+                                                    ),
+                                                    FaIcon(
+                                                      FontAwesomeIcons.tint,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 20,right: 8, left: 4),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: DropdownButton(
+                                                        hint: Text(
+                                                            "Blood Group",
+                                                            overflow: TextOverflow.ellipsis,
+                                                            style: TextStyle(
+
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300)),
+                                                        dropdownColor: Theme.of(context).primaryColor,
+                                                        icon: Icon(
+                                                          Icons
+                                                              .keyboard_arrow_down_rounded,
+                                                          color: _editmode?Colors.red:Colors.grey,
+                                                        ),
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        items: [
+                                                          DpItem(context, 'A+', height),
+                                                          DpItem(context, 'A-', height),
+                                                          DpItem(context, 'B+', height),
+                                                          DpItem(context, 'B-', height),
+                                                          DpItem(context, 'AB+', height),
+                                                          DpItem(context, 'AB-', height),
+                                                          DpItem(context, 'O+', height),
+                                                          DpItem(context, 'O-', height),
+
+                                                        ],
+                                                        value: bloodgroup.trim(),
+                                                        onChanged: _editmode?(value) {
+                                                          setState(() {
+                                                            bloodgroup = value;
+                                                            print(bloodgroup);
+                                                          });
+                                                        }:null),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .dividerColor,
+                                                    width: 1)),
+                                          ),
+                                        ),
+                                      ),
+                                      /*ProfileCard(
                                         height: height,
                                         icon: FaIcon(
                                           FontAwesomeIcons.tint,
@@ -519,7 +620,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           });
                                         },
                                         editmode: _editmode,
-                                      ),
+                                      ),*/
                                       ProfileCard(
                                         height: height,
                                         icon: FaIcon(
@@ -528,7 +629,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Diseases',
                                         controller: diseaseController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             diseases = value;
@@ -547,8 +648,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           color: Colors.blue,
                                         ),
                                         title: 'Age',
+                                        keyboardType: TextInputType.number,
                                         controller: ageController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             age = value;
@@ -564,7 +666,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Allergies',
                                         controller: allergiesController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             allergies = value;
@@ -717,6 +819,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   percent += 0.01;
                 } else {
                   percent = 1;
+
                   ///TODO: send sms
                 }
               }
@@ -740,4 +843,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     print('pref updated!');
   }
 
+  DropdownMenuItem<String> DpItem(BuildContext context, String text, double height) {
+    return DropdownMenuItem(
+      child: Container(
+        child: Text(
+          text,
+          style: TextStyle(
+              color: Theme.of(context).buttonColor,
+              fontWeight: FontWeight.w700,
+              fontSize: height*0.0301,
+          fontFamily: 'Quicksand'),
+        ),
+      ),
+      value: text,
+    );
+  }
 }
