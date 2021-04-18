@@ -42,11 +42,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Enter Your Full Name',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Name',
@@ -63,11 +62,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Enter Your Email',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Email',
@@ -86,11 +84,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Enter Your Password',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Password',
@@ -107,11 +104,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Enter Your Age',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Age',
@@ -122,15 +118,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height: 20),
                 Container(
-                   // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    /*BoxDecoration(
+                  // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  /*BoxDecoration(
                         //color: Colors.white,
                         border: Border.all(
                             color: Colors.grey, style: BorderStyle.solid, width: 1),
                         borderRadius: BorderRadius.circular(20)),*/
                   child: InputDecorator(
                     decoration: InputDecoration(
-                      contentPadding:  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       labelText: 'Blood Group',
                       labelStyle: TextStyle(color: Colors.red),
                       border: OutlineInputBorder(
@@ -139,7 +136,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton(
-                        hint: Text("Select your Blood Group", style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.w300)),
+                          hint: Text("Select your Blood Group",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300)),
                           dropdownColor: Theme.of(context).backgroundColor,
                           icon: Icon(
                             Icons.keyboard_arrow_down_rounded,
@@ -197,11 +198,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Mention if you have any chronic disease',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Diseases',
@@ -217,11 +217,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Mention if you any allergies',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Allergies',
@@ -247,11 +246,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     child: Text(
                       "Register",
-                      style: TextStyle(color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                          color: Theme.of(context).backgroundColor,
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -262,11 +262,17 @@ class _RegisterPageState extends State<RegisterPage> {
 
   DropdownMenuItem<String> DpItem(BuildContext context, String text) {
     return DropdownMenuItem(
-                          child: Container(
-                            child: Text(text, style: TextStyle(color: Theme.of(context).buttonColor, fontSize: 16, fontWeight: FontWeight.w300),),
-                          ),
-                          value: text,
-                        );
+      child: Container(
+        child: Text(
+          text,
+          style: TextStyle(
+              color: Theme.of(context).buttonColor,
+              fontSize: 16,
+              fontWeight: FontWeight.w300),
+        ),
+      ),
+      value: text,
+    );
   }
 
   Future<void> _createuser() async {
@@ -278,10 +284,8 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       bloodgroup = tempBlood;
       SharedPreferences.getInstance().then((prefs) {
-        email = Email;
-        password = Password;
-        prefs.setString('email', Email);
-        prefs.setString('password', Password);
+        uid = currentuser.user.uid;
+        prefs.setString('uid', uid);
         prefs.setString('bloodgroup', bloodgroup);
         prefs.setString('age', age);
         prefs.setString('name', name);
@@ -292,12 +296,15 @@ class _RegisterPageState extends State<RegisterPage> {
           .set({
         'bloodgroup': bloodgroup,
         'age': age,
-        'contacts': '',
-        'diseases': diseases,///TODO: add allergies
+        'contacts': [],
+        'diseases': diseases,
+
+        ///TODO: add allergies
+        'allergies': allergies,
         'name': name,
         'imageurl': '',
       });
-      Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e)=>false);
+      Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e) => false);
     } catch (e) {
       print(e);
       showError(context, e);
@@ -306,6 +313,7 @@ class _RegisterPageState extends State<RegisterPage> {
       showSpinner = false;
     });
   }
+
   String capitalise(String a) {
     List<String> list = a.split(" ");
     a = "";

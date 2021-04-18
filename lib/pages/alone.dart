@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
+import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -29,23 +30,27 @@ class _AlonePageState extends State<AlonePage> {
       backgroundColor: baseColor,
       body: SafeArea(
         child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(padding: const EdgeInsets.only(left: 10),
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back_ios_rounded, color: Colors.red,),
-                    onPressed: (){
-                      timerIsOn = false;
-                      percent = 0;
-                      Navigator.pop(context);
-
-                    },
-                  ),),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_rounded,
+                        color: Colors.red,
+                      ),
+                      onPressed: () {
+                        timerIsOn = false;
+                        percent = 0;
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
                   Padding(
                       padding: const EdgeInsets.only(left: 20),
                       child: myPopMenu(width, height, context)),
@@ -59,17 +64,17 @@ class _AlonePageState extends State<AlonePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only( top:height * 0.07316),
+                    padding: EdgeInsets.only(top: height * 0.07316),
                     child: Text(
                       'Alone Mode',
-                      style: TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.w700),
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.w700),
                       textAlign: TextAlign.center,
                     ),
                   ),
-
                   Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: height * 0.02316),
+                    padding: EdgeInsets.only(
+                        left: 20, right: 20, top: height * 0.02316),
                     child: Text(
                       "After the timer starts, if you don't respond (Press the button below) in 15 min, The app will inform your peers that you in danger.",
                       style: TextStyle(
@@ -81,9 +86,10 @@ class _AlonePageState extends State<AlonePage> {
                   ),
                   Container(
                     child: Hero(
-                      tag:"emergency",
+                      tag: "emergency",
                       child: Padding(
-                        padding: EdgeInsets.only(top: height * 0.0638, bottom: height * 0.0438),
+                        padding: EdgeInsets.only(
+                            top: height * 0.0638, bottom: height * 0.0438),
                         child: ClayContainer(
                           color: baseColor,
                           surfaceColor: baseColor,
@@ -121,7 +127,7 @@ class _AlonePageState extends State<AlonePage> {
                                         animateFromLastPercent: true,
                                         lineWidth: height * 0.040,
                                         circularStrokeCap:
-                                        CircularStrokeCap.round,
+                                            CircularStrokeCap.round,
                                         backgroundColor: Colors.transparent,
                                       ),
                                     ),
@@ -139,12 +145,12 @@ class _AlonePageState extends State<AlonePage> {
                                                 startTimer(time);
                                               } else {
                                                 turnOffTimer();
-                                                Timer(Duration(milliseconds: 600), (){
+                                                Timer(
+                                                    Duration(milliseconds: 600),
+                                                    () {
                                                   timerIsOn = true;
                                                   startTimer(time);
-
                                                 });
-
                                               }
                                             });
                                           },
@@ -158,58 +164,54 @@ class _AlonePageState extends State<AlonePage> {
                                             ),
                                             child: !(seconds == 0)
                                                 ? Column(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  EdgeInsets.only(
-                                                      top: height *
-                                                          0.0276),
-                                                  child: Text(
-                                                    "${seconds~/60}:${seconds%60}"
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w600,
-                                                        fontSize:
-                                                        height *
-                                                            0.060,
-                                                        color: Colors
-                                                            .white),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "I'm Here.",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w600,
-                                                      fontSize:
-                                                      height * 0.03,
-                                                      color:
-                                                      Colors.white),
-                                                )
-                                              ],
-                                            )
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: height *
+                                                                    0.0276),
+                                                        child: Text(
+                                                          "${seconds ~/ 60}:${seconds % 60}"
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: height *
+                                                                  0.060,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        "I'm Here.",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize:
+                                                                height * 0.03,
+                                                            color:
+                                                                Colors.white),
+                                                      )
+                                                    ],
+                                                  )
                                                 : Container(
-                                              child:Text(
-                                                "Press to start",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .w600,
-                                                    fontSize:
-                                                    height *
-                                                        0.040,
-                                                    color: Colors
-                                                        .white),
-                                              ),
-                                            ),
+                                                    child: Text(
+                                                      "Press to start",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize:
+                                                              height * 0.040,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
                                           ),
                                           /*Container(
                                                             decoration: BoxDecoration(
@@ -232,7 +234,7 @@ class _AlonePageState extends State<AlonePage> {
                     ),
                   ),
                   Hero(
-                    tag:'red button',
+                    tag: 'red button',
                     child: Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: RawMaterialButton(
@@ -261,7 +263,6 @@ class _AlonePageState extends State<AlonePage> {
                   ),
                 ],
               ),
-
             ],
           ),
         ),
@@ -275,34 +276,29 @@ class _AlonePageState extends State<AlonePage> {
     seconds = timeInMinutes * 60;
     _time = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-
         if (!timerIsOn) {
           timer.cancel();
-          seconds = 0;}
-          else if (seconds > 0) {
-              seconds--;
-              percent = (tempSec - seconds) / tempSec;
-              if (percent < 0.99) {
-                percent += 0.01;
-              } else {
-                percent = 1;
-                ///TODO: send sms
-                print("Done Biatch! 1");
-              }
+          seconds = 0;
+        } else if (seconds > 0) {
+          seconds--;
+          percent = (tempSec - seconds) / tempSec;
+          if (percent < 0.99) {
+            percent += 0.01;
           } else {
-            percent = 0;
-            print("Done Biatch! 2");
-            timer.cancel();
-            timerIsOn = false;
-          }
+            percent = 1;
 
+            ///TODO: send sms
+            sendSms();
+            print("Done Biatch! 1");
+          }
+        } else {
+          percent = 0;
+          print("Done Biatch! 2");
+          timer.cancel();
+          timerIsOn = false;
+        }
       });
     });
-
-
-
-
-
 
     /*double secPercent = (seconds / 100);
       _time = Timer.periodic(Duration(seconds: 1), (timer) {
