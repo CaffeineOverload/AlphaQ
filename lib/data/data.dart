@@ -26,6 +26,8 @@ String uid;
 String bloodgroup;
 String age;
 String diseases;
+String email;
+String password;
 UserCredential currentUser;
 List<ContactsData> contactslist = [];
 String contactslistdata = '[]';

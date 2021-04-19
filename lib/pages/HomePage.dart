@@ -11,6 +11,7 @@ import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:emergency_app/pages/alone.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist = ContactsData.decode(contactslistdata);
-//     name = pref.getString('name');
+//  name = pref.getString('name');
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
