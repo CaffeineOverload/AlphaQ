@@ -85,8 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     recordAudio = pref.getBool('audio') ?? false;
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
-    contactslist =
-        ContactsData.decode(contactslistdata);
+    contactslist = ContactsData.decode(contactslistdata);
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
@@ -102,7 +101,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     currentDisplaySize.height = height;
     currentDisplaySize.width = width;
-    //nameBuffer = 'Hello' + name;
     switch (_pageState) {
       case 0:
         _yOffset = height;
@@ -151,7 +149,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      name==null?'':'Hello ${name.trim().split(' ').first}',
+                                      name == null
+                                          ? ''
+                                          : 'Hello ${capitalise(name.trim().split(' ').first)}',
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
@@ -324,15 +324,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                                     FontWeight
                                                                         .w600,
                                                                 fontSize:
-                                                                    height * 0.02,
-                                                                color:
-                                                                    Colors.white),
+                                                                    height *
+                                                                        0.02,
+                                                                color: Colors
+                                                                    .white),
                                                           )
                                                         ],
                                                       )
                                                     : Container(
-                                                        decoration: BoxDecoration(
-                                                          image: DecorationImage(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
                                                             image: AssetImage(
                                                                 'images/button.png'),
                                                           ),
@@ -369,7 +372,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
                         /// Alone Button
                         Hero(
-                          tag:'red button',
+                          tag: 'red button',
                           child: Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: RawMaterialButton(
@@ -381,7 +384,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               highlightColor: Colors.red[900],
                               highlightElevation: 0,
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                padding:
+                                    const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                 child: Text(
                                   "I'm Alone.",
                                   style: TextStyle(
@@ -444,26 +448,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       size: height * 0.0355,
                                     )),
                                 IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: (){
-                                    setState(() {
-                                      _editmode = !_editmode;
-                                      if(!_editmode){
-                                        updatePrefs();
-                                        ///TODO: update data on firebase
-                                      }
-                                       //updateDetails();
-                                      //pref.setString('userName', name);
-                                    });
-                                  },
-                                  icon:Icon(Icons.edit,
-                                  color: _editmode
-                                      ? Colors.green
-                                      : Theme.of(context).buttonColor,
-                                  size: _editmode
-                                      ? height * 0.0355
-                                      : height * 0.0255,)
-                                ),
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {
+                                      setState(() {
+                                        _editmode = !_editmode;
+                                        if (!_editmode) {
+                                          updatePrefs();
+
+                                          ///TODO: update data on firebase
+                                        }
+                                        //updateDetails();
+                                        //pref.setString('userName', name);
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: _editmode
+                                          ? Colors.green
+                                          : Theme.of(context).buttonColor,
+                                      size: _editmode
+                                          ? height * 0.0355
+                                          : height * 0.0255,
+                                    )),
                               ],
                             ),
                             Center(
@@ -512,7 +518,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Blood Group',
                                         controller: bloodController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             bloodgroup = value;
@@ -528,7 +534,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Diseases',
                                         controller: diseaseController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             diseases = value;
@@ -548,7 +554,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Age',
                                         controller: ageController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             age = value;
@@ -564,7 +570,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Allergies',
                                         controller: allergiesController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             allergies = value;
@@ -717,6 +723,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   percent += 0.01;
                 } else {
                   percent = 1;
+
                   ///TODO: send sms
                 }
               }
@@ -739,5 +746,4 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref.setString('allergies', allergies);
     print('pref updated!');
   }
-
 }

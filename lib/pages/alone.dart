@@ -6,6 +6,8 @@ import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:emergency_app/runner/backgroundMicDetection.dart';
+import 'package:emergency_app/runner/recorder.dart';
 
 class AlonePage extends StatefulWidget {
   static String id = 'AlonePage';
