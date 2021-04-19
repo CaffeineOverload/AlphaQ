@@ -7,11 +7,44 @@ import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+// import 'package:emergency_app/runner/backgroundMicDetection.dart';1
+import 'package:record/record.dart';
+import 'dart:core';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:speech_to_text/speech_recognition_error.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:async';
+
+final stt.SpeechToText _speechToText = stt.SpeechToText();
+bool _ready, _listening;
+String _lastStatus, _lastError, _lastWords;
 
 class AlonePage extends StatefulWidget {
   static String id = 'AlonePage';
   @override
   _AlonePageState createState() => _AlonePageState();
+}
+
+Future<void> initState() async {
+  bool result = await Record.hasPermission();
+  print("initcalled");
+  final dir = await getExternalStorageDirectory();
+  String path = dir.path +
+      '/' +
+      DateTime.now().millisecondsSinceEpoch.toString() +
+      '.m4a';
+  //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
+  print(path);
+  if (result == true) {
+    print("recoeding starded");
+    await Record.start(
+      path: path, // required
+      encoder: AudioEncoder.AAC, // by default
+      bitRate: 128000, // by default
+      samplingRate: 44100, // by default
+    );
+  }
 }
 
 class _AlonePageState extends State<AlonePage> {
@@ -20,6 +53,35 @@ class _AlonePageState extends State<AlonePage> {
   double percent = 0;
   bool timerIsOn = false;
   Timer time;
+  bool recordIsOn = false;
+  @override
+  void initState() {
+    asyncMethod();
+    super.initState();
+  }
+
+  Future<void> asyncMethod() async {
+    if (recordIsOn == false) {
+      bool result = await Record.hasPermission();
+      print("initcalled");
+      final dir = await getExternalStorageDirectory();
+      String path = dir.path +
+          '/' +
+          DateTime.now().millisecondsSinceEpoch.toString() +
+          '.m4a';
+      //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
+      print(path);
+      if (result == true) {
+        print("recoeding starded");
+        await Record.start(
+          path: path, // required
+          encoder: AudioEncoder.AAC, // by default
+          bitRate: 128000, // by default
+          samplingRate: 44100, // by default
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +107,9 @@ class _AlonePageState extends State<AlonePage> {
                         color: Colors.red,
                       ),
                       onPressed: () {
+                        stopRecording();
+                        _stop();
+                        _cancel();
                         timerIsOn = false;
                         percent = 0;
                         Navigator.pop(context);
@@ -142,6 +207,9 @@ class _AlonePageState extends State<AlonePage> {
                                             setState(() {
                                               if (!timerIsOn) {
                                                 timerIsOn = true;
+                                                // print(loop());
+                                                initState();
+                                                loop();
                                                 startTimer(time);
                                               } else {
                                                 turnOffTimer();
@@ -240,6 +308,9 @@ class _AlonePageState extends State<AlonePage> {
                       child: RawMaterialButton(
                         onPressed: () {
                           turnOffTimer();
+                          _stop();
+                          _cancel();
+                          stopRecording();
                         },
                         elevation: 8.0,
                         fillColor: Colors.red,
@@ -268,6 +339,101 @@ class _AlonePageState extends State<AlonePage> {
         ),
       ),
     );
+  }
+
+  Future<bool> checkRecording() async {
+    return await Record.isRecording();
+  }
+
+  void stopRecording() async {
+    await Record.stop();
+  }
+
+  bool loop() {
+    int t = 0;
+    init();
+    _start();
+    const time = const Duration(minutes: 1);
+    new Timer.periodic(time, (timer) {
+      _stop();
+      if (check()) {
+        return true;
+      }
+      t++;
+      if (t == 15) {
+        timer.cancel();
+        return false;
+      }
+      _start();
+    });
+    return false;
+  }
+
+  void init() async {
+    _ready = await _speechToText.initialize(
+      onError: _onError,
+      onStatus: _onStatus,
+    );
+    print("detection init");
+  }
+
+  void _start() async {
+    print("Detection Started");
+    await _speechToText.listen(onResult: _speechResult);
+    _listening = true;
+    // setState(() {
+    //   _listening = true;
+    // });
+  }
+
+  void _stop() async {
+    _speechToText.stop();
+    _listening = false;
+
+    // setState(() {
+    //   _listening = false;
+    // });
+    print("detection stopped");
+  }
+
+  void _cancel() async {
+    _speechToText.cancel();
+    _listening = false;
+
+    // setState(() {
+    //   _listening = false;
+    // });
+  }
+
+  void _onStatus(String status) {
+    _lastStatus = status;
+    // setState(() {
+    //   _lastStatus = status;
+    // });
+    print(_lastStatus);
+  }
+
+  void _onError(SpeechRecognitionError errorNotification) {
+    setState(() {
+      _lastError = errorNotification.errorMsg;
+    });
+    print(_lastError);
+  }
+
+  void _speechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+    });
+    print(_lastWords);
+  }
+
+  bool check() {
+    print(_lastWords);
+    if (_lastWords.contains("help")) {
+      print("help found");
+      return true;
+    }
+    return false;
   }
 
   void startTimer(Timer _time) {

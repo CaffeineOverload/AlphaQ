@@ -86,7 +86,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist = ContactsData.decode(contactslistdata);
-    name = pref.getString('name');
+//     name = pref.getString('name');
+    currentUser = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    name = currentUser.user.displayName;
     setState(() {
       dataRecive = false;
     });
@@ -99,7 +102,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     currentDisplaySize.height = height;
     currentDisplaySize.width = width;
-    //nameBuffer = 'Hello' + name;
     switch (_pageState) {
       case 0:
         _yOffset = height;
@@ -150,7 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     Text(
                                       name == null
                                           ? ''
-                                          : 'Hello ${name.trim().split(' ').first}',
+                                          : 'Hello ${capitalise(name.trim().split(' ').first)}',
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
@@ -454,7 +456,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         if (!_editmode) {
                                           updatePrefs();
                                           updateDetails();
-
                                           ///TODO: update data on firebase
                                         }
                                         //updateDetails();
@@ -629,7 +630,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Blood Group',
                                         controller: bloodController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             bloodgroup = value;
@@ -859,7 +860,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref.setString('allergies', allergies);
     print('pref updated!');
   }
-
   DropdownMenuItem<String> DpItem(
       BuildContext context, String text, double height) {
     return DropdownMenuItem(
