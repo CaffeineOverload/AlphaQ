@@ -8,19 +8,18 @@ import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
-import 'package:emergency_app/pages/alone.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:emergency_app/pages/alone.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:emergency_app/pages/alone.dart';
+
 import 'Settings.dart';
 
 class HomePage extends StatefulWidget {
@@ -87,6 +86,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist = ContactsData.decode(contactslistdata);
+//     name = pref.getString('name');
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
@@ -102,7 +102,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double width = MediaQuery.of(context).size.width;
     currentDisplaySize.height = height;
     currentDisplaySize.width = width;
-    //nameBuffer = 'Hello' + name;
     switch (_pageState) {
       case 0:
         _yOffset = height;
@@ -153,7 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     Text(
                                       name == null
                                           ? ''
-                                          : 'Hello ${name.trim().split(' ').first}',
+                                          : 'Hello ${capitalise(name.trim().split(' ').first)}',
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
@@ -456,7 +455,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         _editmode = !_editmode;
                                         if (!_editmode) {
                                           updatePrefs();
-
+                                          updateDetails();
                                           ///TODO: update data on firebase
                                         }
                                         //updateDetails();
@@ -548,24 +547,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          top: 20,right: 8, left: 4),
+                                                          top: 20,
+                                                          right: 8,
+                                                          left: 4),
                                                   child:
                                                       DropdownButtonHideUnderline(
                                                     child: DropdownButton(
                                                         hint: Text(
                                                             "Blood Group",
-                                                            overflow: TextOverflow.ellipsis,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             style: TextStyle(
-
                                                                 fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w300)),
-                                                        dropdownColor: Theme.of(context).primaryColor,
+                                                        dropdownColor:
+                                                            Theme.of(context)
+                                                                .primaryColor,
                                                         icon: Icon(
                                                           Icons
                                                               .keyboard_arrow_down_rounded,
-                                                          color: _editmode?Colors.red:Colors.grey,
+                                                          color: _editmode
+                                                              ? Colors.red
+                                                              : Colors.grey,
                                                         ),
                                                         style: TextStyle(
                                                           fontSize: 16,
@@ -574,23 +580,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               FontWeight.w400,
                                                         ),
                                                         items: [
-                                                          DpItem(context, 'A+', height),
-                                                          DpItem(context, 'A-', height),
-                                                          DpItem(context, 'B+', height),
-                                                          DpItem(context, 'B-', height),
-                                                          DpItem(context, 'AB+', height),
-                                                          DpItem(context, 'AB-', height),
-                                                          DpItem(context, 'O+', height),
-                                                          DpItem(context, 'O-', height),
-
+                                                          DpItem(context, 'A+',
+                                                              height),
+                                                          DpItem(context, 'A-',
+                                                              height),
+                                                          DpItem(context, 'B+',
+                                                              height),
+                                                          DpItem(context, 'B-',
+                                                              height),
+                                                          DpItem(context, 'AB+',
+                                                              height),
+                                                          DpItem(context, 'AB-',
+                                                              height),
+                                                          DpItem(context, 'O+',
+                                                              height),
+                                                          DpItem(context, 'O-',
+                                                              height),
                                                         ],
-                                                        value: bloodgroup.trim(),
-                                                        onChanged: _editmode?(value) {
-                                                          setState(() {
-                                                            bloodgroup = value;
-                                                            print(bloodgroup);
-                                                          });
-                                                        }:null),
+                                                        value: 'A+',
+                                                        onChanged: _editmode
+                                                            ? (value) {
+                                                                setState(() {
+                                                                  bloodgroup =
+                                                                      value;
+                                                                  print(
+                                                                      bloodgroup);
+                                                                });
+                                                              }
+                                                            : null),
                                                   ),
                                                 ),
                                               ],
@@ -613,7 +630,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         ),
                                         title: 'Blood Group',
                                         controller: bloodController,
-                                        onChanged: (value){
+                                        onChanged: (value) {
                                           setState(() {
                                             //controller.text = value;
                                             bloodgroup = value;
@@ -819,6 +836,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   percent += 0.01;
                 } else {
                   percent = 1;
+                  sendSms();
 
                   ///TODO: send sms
                 }
@@ -842,8 +860,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref.setString('allergies', allergies);
     print('pref updated!');
   }
-
-  DropdownMenuItem<String> DpItem(BuildContext context, String text, double height) {
+  DropdownMenuItem<String> DpItem(
+      BuildContext context, String text, double height) {
     return DropdownMenuItem(
       child: Container(
         child: Text(
@@ -851,8 +869,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           style: TextStyle(
               color: Theme.of(context).buttonColor,
               fontWeight: FontWeight.w700,
-              fontSize: height*0.0301,
-          fontFamily: 'Quicksand'),
+              fontSize: height * 0.0301,
+              fontFamily: 'Quicksand'),
         ),
       ),
       value: text,
