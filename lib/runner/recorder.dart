@@ -13,10 +13,3 @@ void startRecording() async {
   }
 }
 
-void stopRecording() async {
-  await Record.stop();
-}
-
-Future<bool> checkRecording() async {
-  return await Record.isRecording();
-}

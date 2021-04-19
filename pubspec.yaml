@@ -43,7 +43,7 @@ dependencies:
   telephony: any
   percent_indicator: any
   record: any
-
+  path_provider: ^2.0.1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: any
