@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
+import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -238,7 +239,7 @@ class _AlonePageState extends State<AlonePage> {
                                                         padding:
                                                             EdgeInsets.only(
                                                                 top: height *
-                                                                    0.0196),
+                                                                    0.0276),
                                                         child: Text(
                                                           "${seconds ~/ 60}:${seconds % 60}"
                                                               .toString(),
@@ -247,7 +248,7 @@ class _AlonePageState extends State<AlonePage> {
                                                                   FontWeight
                                                                       .w600,
                                                               fontSize: height *
-                                                                  0.070,
+                                                                  0.060,
                                                               color:
                                                                   Colors.white),
                                                         ),
@@ -453,6 +454,7 @@ class _AlonePageState extends State<AlonePage> {
             percent = 1;
 
             ///TODO: send sms
+            sendSms();
             print("Done Biatch! 1");
           }
         } else {

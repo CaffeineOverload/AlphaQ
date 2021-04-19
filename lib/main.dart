@@ -8,23 +8,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'pages/alone.dart';
+
 import 'pages/Contacts.dart';
 import 'pages/HomePage.dart';
 import 'pages/Settings.dart';
+import 'pages/alone.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await SharedPreferences.getInstance().then((prefs) {
     darkMode = prefs.getBool('dark') ?? false;
-    email = prefs.getString('email');
-    password = prefs.getString('password');
+    uid = prefs.getString('uid');
   });
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-    .then((_) {
-      runApp(MyApp());
-    });
+      .then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
-            initialRoute: email != null ? HomePage.id : LoginPage.id,
+            initialRoute: uid != null ? HomePage.id : LoginPage.id,
 
 //             initialRoute: LoginPage.id,
             routes: {

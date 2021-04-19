@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:clay_containers/clay_containers.dart';
-import 'package:flutter/material.dart';
 import 'package:emergency_app/components/ContactsCard.dart';
 import 'package:emergency_app/data/data.dart';
+import 'package:emergency_app/models/contacts.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
-import 'package:emergency_app/models/contacts.dart';
 
 class ContactsPage extends StatefulWidget {
   static String id = 'ContactsPage';
@@ -78,55 +78,59 @@ class _ContactsPageState extends State<ContactsPage> {
                       ),
 
                       /// Add Button
-                      if(contactslist.length < 5) Hero(
-                        tag: 'emergency',
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              if(contactslist.length < 5){
-                                HapticFeedback.lightImpact();
-                                buttonPressed();
-                                try {
-                                  await FlutterContactPicker.requestPermission();
-                                  if (await FlutterContactPicker
-                                      .hasPermission()) {
-                                    PhoneContact contacts =
-                                        await FlutterContactPicker
-                                            .pickPhoneContact();
-                                    ContactsData temp = ContactsData(
-                                        name: contacts.fullName,
-                                        number: contacts.phoneNumber.number
-                                            .toString());
-                                    if(!ContactsData.contactIfExist(temp)) {
+                      if (contactslist.length < 5)
+                        Hero(
+                          tag: 'emergency',
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () async {
+                                if (contactslist.length < 5) {
+                                  HapticFeedback.lightImpact();
+                                  buttonPressed();
+                                  try {
+                                    await FlutterContactPicker
+                                        .requestPermission();
+                                    if (await FlutterContactPicker
+                                        .hasPermission()) {
+                                      PhoneContact contacts =
+                                          await FlutterContactPicker
+                                              .pickPhoneContact();
+                                      ContactsData temp = ContactsData(
+                                          name: contacts.fullName,
+                                          number: contacts.phoneNumber.number
+                                              .toString());
+                                      if (!ContactsData.contactIfExist(temp)) {
                                         setState(() {
                                           contactslist.add(temp);
                                         });
                                       }
                                     }
-                                } on Exception catch (_) {
-                                  print("throwing new error");
-                                  throw Exception("Can't add contacts");
+                                  } on Exception catch (_) {
+                                    print("throwing new error");
+                                    throw Exception("Can't add contacts");
+                                  }
+                                  ContactsData.updateContactsListInPref(pref);
+
+                                  ///TODO: update data on firebase
+                                  updateDetails();
                                 }
-                                ContactsData.updateContactsListInPref(pref);
-                                ///TODO: update data on firebase
-                              }
-                            },
-                            child: ClayContainer(
-                                color: baseColor,
-                                surfaceColor: baseColor,
-                                depth: buttonDepth.toInt(),
-                                spread: 10,
-                                borderRadius: 100,
-                                height: currentDisplaySize.width * 0.1025,
-                                width: currentDisplaySize.width * 0.1025,
-                                child: Icon(
-                                  Icons.add,
-                                  size: currentDisplaySize.width * 0.07692,
-                                )),
+                              },
+                              child: ClayContainer(
+                                  color: baseColor,
+                                  surfaceColor: baseColor,
+                                  depth: buttonDepth.toInt(),
+                                  spread: 10,
+                                  borderRadius: 100,
+                                  height: currentDisplaySize.width * 0.1025,
+                                  width: currentDisplaySize.width * 0.1025,
+                                  child: Icon(
+                                    Icons.add,
+                                    size: currentDisplaySize.width * 0.07692,
+                                  )),
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -162,12 +166,12 @@ class _ContactsPageState extends State<ContactsPage> {
               Expanded(
                 child: Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if(contactslist.length > 4)Text("Can't add more than 5 contacts"),
-                      ],
-                    )
-                ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (contactslist.length > 4)
+                      Text("Can't add more than 5 contacts"),
+                  ],
+                )),
                 flex: 1,
               )
             ],

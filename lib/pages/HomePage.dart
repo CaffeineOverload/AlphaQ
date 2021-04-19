@@ -8,19 +8,18 @@ import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
-import 'package:emergency_app/pages/alone.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:emergency_app/pages/alone.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:emergency_app/pages/alone.dart';
+
 import 'Settings.dart';
 
 class HomePage extends StatefulWidget {
@@ -81,11 +80,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     bloodgroup = pref.getString('bloodgroup') ?? 'Na';
     age = pref.getString('age') ?? 'Na';
     diseases = pref.getString('diseases') ?? 'Na';
+    allergies = pref.getString('allergies') ?? 'Na';
     dialEmergencyNumbers = pref.getBool('emergency') ?? false;
     recordAudio = pref.getBool('audio') ?? false;
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist = ContactsData.decode(contactslistdata);
+//     name = pref.getString('name');
     currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
     name = currentUser.user.displayName;
@@ -454,7 +455,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         _editmode = !_editmode;
                                         if (!_editmode) {
                                           updatePrefs();
-
+                                          updateDetails();
                                           ///TODO: update data on firebase
                                         }
                                         //updateDetails();
@@ -510,7 +511,118 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 children: <Widget>[
                                   Row(
                                     children: [
-                                      ProfileCard(
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            //height: 200,
+                                            //width: 150,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      "Blood Group",
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                      softWrap: true,
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize:
+                                                              height * 0.0201),
+                                                    ),
+                                                    FaIcon(
+                                                      FontAwesomeIcons.tint,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 20,
+                                                          right: 8,
+                                                          left: 4),
+                                                  child:
+                                                      DropdownButtonHideUnderline(
+                                                    child: DropdownButton(
+                                                        hint: Text(
+                                                            "Blood Group",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300)),
+                                                        dropdownColor:
+                                                            Theme.of(context)
+                                                                .primaryColor,
+                                                        icon: Icon(
+                                                          Icons
+                                                              .keyboard_arrow_down_rounded,
+                                                          color: _editmode
+                                                              ? Colors.red
+                                                              : Colors.grey,
+                                                        ),
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        items: [
+                                                          DpItem(context, 'A+',
+                                                              height),
+                                                          DpItem(context, 'A-',
+                                                              height),
+                                                          DpItem(context, 'B+',
+                                                              height),
+                                                          DpItem(context, 'B-',
+                                                              height),
+                                                          DpItem(context, 'AB+',
+                                                              height),
+                                                          DpItem(context, 'AB-',
+                                                              height),
+                                                          DpItem(context, 'O+',
+                                                              height),
+                                                          DpItem(context, 'O-',
+                                                              height),
+                                                        ],
+                                                        value: 'A+',
+                                                        onChanged: _editmode
+                                                            ? (value) {
+                                                                setState(() {
+                                                                  bloodgroup =
+                                                                      value;
+                                                                  print(
+                                                                      bloodgroup);
+                                                                });
+                                                              }
+                                                            : null),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    color: Theme.of(context)
+                                                        .dividerColor,
+                                                    width: 1)),
+                                          ),
+                                        ),
+                                      ),
+                                      /*ProfileCard(
                                         height: height,
                                         icon: FaIcon(
                                           FontAwesomeIcons.tint,
@@ -525,7 +637,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           });
                                         },
                                         editmode: _editmode,
-                                      ),
+                                      ),*/
                                       ProfileCard(
                                         height: height,
                                         icon: FaIcon(
@@ -553,6 +665,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           color: Colors.blue,
                                         ),
                                         title: 'Age',
+                                        keyboardType: TextInputType.number,
                                         controller: ageController,
                                         onChanged: (value) {
                                           setState(() {
@@ -723,6 +836,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   percent += 0.01;
                 } else {
                   percent = 1;
+                  sendSms();
 
                   ///TODO: send sms
                 }
@@ -745,5 +859,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref.setString('diseases', diseases);
     pref.setString('allergies', allergies);
     print('pref updated!');
+  }
+  DropdownMenuItem<String> DpItem(
+      BuildContext context, String text, double height) {
+    return DropdownMenuItem(
+      child: Container(
+        child: Text(
+          text,
+          style: TextStyle(
+              color: Theme.of(context).buttonColor,
+              fontWeight: FontWeight.w700,
+              fontSize: height * 0.0301,
+              fontFamily: 'Quicksand'),
+        ),
+      ),
+      value: text,
+    );
   }
 }

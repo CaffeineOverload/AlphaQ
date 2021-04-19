@@ -22,39 +22,54 @@ class ProfileData {
 DisplaySize currentDisplaySize = DisplaySize();
 
 String name;
+String uid;
 String bloodgroup;
 String age;
 String diseases;
 UserCredential currentUser;
-String email;
-String password;
 List<ContactsData> contactslist = [];
 String contactslistdata = '[]';
 Future<void> updateDetails() async {
-  SharedPreferences.getInstance().then((prefs) {
-    prefs.setString('bloodgroup', bloodgroup);
-    prefs.setString('age', age);
-    prefs.setString('name', name);
-    prefs.setString('diseases', diseases);
-    prefs.setString('allergies', allergies);
-  });
-  await FirebaseFirestore.instance
-      .collection('users')
-      .doc(currentUser.user.uid)
-      .set({
-    'bloodgroup': bloodgroup,
-    'age': age,
-    'contacts': contactslistdata,
-    'diseases': diseases, ///TODO: add allergies
-    'name': name,
-    'imageurl': '',
-  });
+  try {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.user.uid)
+        .set({
+      'bloodgroup': bloodgroup,
+      'age': age,
+      'contacts': contactslistdata,
+      'allergies': allergies,
+      'diseases': diseases,
+
+      ///TODO: add allergies
+      'name': name,
+      'imageurl': '',
+    });
+  } on Exception catch (e) {
+    print(e);
+  }
   // final userdetail = widget.currentUser.user.uid;
   // final detail = await FirebaseFirestore.instance
   //     .collection('users')
   //     .where('uid', isEqualTo: userdetail)
   //     .get();
   //print(detail.docs.first.data().updateAll((key, value) =>));
+}
+
+void extractDetails() async {
+  try {
+    final _storage = FirebaseFirestore.instance;
+    final data = await _storage.collection('users').doc(uid).get();
+    var data2 = data.data();
+    final mp = data2;
+    name = data2['name'];
+    bloodgroup = data2['bloodgroup'];
+    diseases = data2['diseases'];
+    contactslist = data2['contacts'];
+    age = data2['age'];
+  } on Exception catch (e) {
+    print(e);
+  }
 }
 
 String contactsData;

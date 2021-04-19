@@ -122,20 +122,33 @@ class _SettingPageState extends State<SettingPage> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FaIcon(
-                            FontAwesomeIcons.phoneAlt,
-                            size: 22,
+                          Padding(
+                            padding: const EdgeInsets.only(top:8.0),
+                            child: FaIcon(
+                              FontAwesomeIcons.phoneAlt,
+                              size: 22,
+                            ),
                           ),
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child: Text(
-                              'Dial Emergency numbers',
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.w500),
-                            ),
+                                child: Column(
+                                  //mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Dial Emergency numbers',
+                                      style: TextStyle(
+                                          fontSize: 22, fontWeight: FontWeight.w500),
+                                    ),
+                                    Text('Emergency Button will dial emergency number too along with sending sms to peers',
+                                      style: TextStyle(
+                                          fontSize: 14,color: Colors.grey, fontWeight: FontWeight.w500),)
+                                  ],
+                                ),
+
                           )),
                           Transform.scale(
                             scale: 0.8,
@@ -157,19 +170,32 @@ class _SettingPageState extends State<SettingPage> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FaIcon(
-                            FontAwesomeIcons.microphone,
-                            size: 22,
+                          Padding(
+                            padding: const EdgeInsets.only(top:8.0),
+                            child: FaIcon(
+                              FontAwesomeIcons.microphone,
+                              size: 22,
+                            ),
                           ),
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 26),
-                            child: Text(
-                              'Record Audio',
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.w500),
+
+                            child: Column(
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Record Audio',
+                                  style: TextStyle(
+                                      fontSize: 22, fontWeight: FontWeight.w500),
+                                ),
+                                Text('Audio will be recorded in Alone Mode for further use if option is enabled',
+                                  style: TextStyle(
+                                      fontSize: 14,color: Colors.grey, fontWeight: FontWeight.w500),)
+                              ],
                             ),
                           )),
                           Transform.scale(
@@ -191,19 +217,31 @@ class _SettingPageState extends State<SettingPage> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          FaIcon(
-                            FontAwesomeIcons.dotCircle,
-                            size: 24,
+                          Padding(
+                            padding: const EdgeInsets.only(top:8.0),
+                            child: FaIcon(
+                              FontAwesomeIcons.dotCircle,
+                              size: 24,
+                            ),
                           ),
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child: Text(
-                              'Trigger Phrases Detection',
-                              style: TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.w500),
+                            child: Column(
+                              //mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Trigger Phrases Detection',
+                                  style: TextStyle(
+                                      fontSize: 22, fontWeight: FontWeight.w500),
+                                ),
+                                Text('If enabled, the app will try to detect Phrases like "Help" to trigger Emergency SMS',
+                                  style: TextStyle(
+                                      fontSize: 14,color: Colors.grey, fontWeight: FontWeight.w500),)
+                              ],
                             ),
                           )),
                           Transform.scale(
@@ -234,7 +272,7 @@ class _SettingPageState extends State<SettingPage> {
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child: Text(
+                            child:  Text(
                               'Log Out',
                               style: TextStyle(
                                   fontSize: 22, fontWeight: FontWeight.w500),

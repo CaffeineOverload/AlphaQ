@@ -45,19 +45,17 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     labelText: 'Email',
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Enter Your Email',
                     labelStyle: TextStyle(color: Colors.red),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                   ),
-
                 ),
                 SizedBox(
                   height: 20,
@@ -70,15 +68,13 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Colors.red, width: 2.0),
+                      borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    hintStyle:TextStyle(color: Colors.grey[700]) ,
+                    hintStyle: TextStyle(color: Colors.grey[700]),
                     hintText: 'Enter Your Password',
                     labelStyle: TextStyle(color: Colors.red),
                     labelText: 'Password',
-
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
@@ -107,7 +103,9 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Text(
                             "Login",
-                            style: TextStyle(color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                color: Theme.of(context).backgroundColor,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -124,11 +122,14 @@ class _LoginPageState extends State<LoginPage> {
                         child: FlatButton(
                           onPressed: () {
                             Navigator.pushNamed(context, RegisterPage.id);
+
                             ///TODO: get details user details(disease, allergies etc) from firebase and store in pref
                           },
                           child: Text(
                             "Register",
-                            style: TextStyle(color: Theme.of(context).backgroundColor, fontWeight: FontWeight.w700),
+                            style: TextStyle(
+                                color: Theme.of(context).backgroundColor,
+                                fontWeight: FontWeight.w700),
                           ),
                         ),
                       ),
@@ -155,22 +156,18 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _getuser() async {
     try {
-      currentUser = await _auth.signInWithEmailAndPassword(
+      final currentUser = await _auth.signInWithEmailAndPassword(
           email: Email, password: Password);
-      print(currentUser);
+      //print(currentUser);
+      extractDetails();
       SharedPreferences.getInstance().then((prefs) {
-        email = Email;
-        password = Password;
-        prefs.setString('email', Email);
-        prefs.setString('password', Password);
+        uid = currentUser.user.uid;
+        prefs.setString('uid', currentUser.user.uid);
       });
-      Navigator.pushNamed(context, HomePage.id);
+      Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e) => false);
     } catch (e) {
       print(e);
       showError(context, e);
     }
-    setState(() {
-      showSpinner = false;
-    });
   }
 }
