@@ -11,6 +11,7 @@ import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:emergency_app/pages/alone.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';

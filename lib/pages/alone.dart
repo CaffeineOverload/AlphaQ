@@ -26,27 +26,6 @@ class AlonePage extends StatefulWidget {
   _AlonePageState createState() => _AlonePageState();
 }
 
-Future<void> initState() async {
-  bool result = await Record.hasPermission();
-  print("initcalled");
-  final dir = await getExternalStorageDirectory();
-  String path = dir.path +
-      '/' +
-      DateTime.now().millisecondsSinceEpoch.toString() +
-      '.m4a';
-  //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
-  print(path);
-  if (result == true) {
-    print("recoeding starded");
-    await Record.start(
-      path: path, // required
-      encoder: AudioEncoder.AAC, // by default
-      bitRate: 128000, // by default
-      samplingRate: 44100, // by default
-    );
-  }
-}
-
 class _AlonePageState extends State<AlonePage> {
   int timeInMinutes = 0;
   int seconds = 0;
@@ -54,6 +33,7 @@ class _AlonePageState extends State<AlonePage> {
   bool timerIsOn = false;
   Timer time;
   bool recordIsOn = false;
+  bool detectonIsOn = false;
   @override
   void initState() {
     asyncMethod();
@@ -69,6 +49,7 @@ class _AlonePageState extends State<AlonePage> {
           '/' +
           DateTime.now().millisecondsSinceEpoch.toString() +
           '.m4a';
+      recordIsOn = true;
       //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
       print(path);
       if (result == true) {
@@ -350,23 +331,25 @@ class _AlonePageState extends State<AlonePage> {
   }
 
   bool loop() {
-    int t = 0;
-    init();
-    _start();
-    const time = const Duration(minutes: 1);
-    new Timer.periodic(time, (timer) {
-      _stop();
-      if (check()) {
-        return true;
-      }
-      t++;
-      if (t == 15) {
-        timer.cancel();
-        return false;
-      }
+    if (detectonIsOn == false) {
+      int t = 0;
+      init();
       _start();
-    });
-    return false;
+      const time = const Duration(minutes: 1);
+      new Timer.periodic(time, (timer) {
+        _stop();
+        if (check()) {
+          return true;
+        }
+        t++;
+        if (t == 15) {
+          timer.cancel();
+          return false;
+        }
+        _start();
+      });
+      return false;
+    }
   }
 
   void init() async {
