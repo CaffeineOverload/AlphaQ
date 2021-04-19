@@ -190,14 +190,17 @@ class _AlonePageState extends State<AlonePage> {
                                                 timerIsOn = true;
                                                 // print(loop());
                                                 initState();
-                                                loop();
+                                                check();
                                                 startTimer(time);
                                               } else {
+                                                _stop();
+                                                _cancel();
                                                 turnOffTimer();
                                                 Timer(
                                                     Duration(milliseconds: 600),
                                                     () {
                                                   timerIsOn = true;
+                                                  check();
                                                   startTimer(time);
                                                 });
                                               }
@@ -330,27 +333,27 @@ class _AlonePageState extends State<AlonePage> {
     await Record.stop();
   }
 
-  bool loop() {
-    if (detectonIsOn == false) {
-      int t = 0;
-      init();
-      _start();
-      const time = const Duration(minutes: 1);
-      new Timer.periodic(time, (timer) {
-        _stop();
-        if (check()) {
-          return true;
-        }
-        t++;
-        if (t == 15) {
-          timer.cancel();
-          return false;
-        }
-        _start();
-      });
-      return false;
-    }
-  }
+  // bool loop() {
+  //   if (detectonIsOn == false) {
+  //     int t = 0;
+  //     init();
+  //     _start();
+  //     const time = const Duration(minutes: 1);
+  //     new Timer.periodic(time, (timer) {
+  //       _stop();
+  //       if (check()) {
+  //         return true;
+  //       }
+  //       t++;
+  //       if (t == 15) {
+  //         timer.cancel();
+  //         return false;
+  //       }
+  //       _start();
+  //     });
+  //     return false;
+  //   }
+  // }
 
   void init() async {
     _ready = await _speechToText.initialize(
@@ -409,7 +412,6 @@ class _AlonePageState extends State<AlonePage> {
     });
     print(_lastWords);
   }
-
   bool check() {
     print(_lastWords);
     if (_lastWords.contains("help")) {
