@@ -77,6 +77,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref = await SharedPreferences.getInstance();
     //name = pref.getString('userName') ?? '';
     extractDetails();
+    name = pref.getString('name');
     darkMode = pref.getBool('dark') ?? false;
     bloodgroup = pref.getString('bloodgroup') ?? 'A+';
     age = pref.getString('age') ?? 'Na';
@@ -87,10 +88,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist = ContactsData.decode(contactslistdata);
-//     name = pref.getString('name');
-    currentUser = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-    name = currentUser.user.displayName;
     setState(() {
       dataRecive = false;
     });
@@ -457,6 +454,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         if (!_editmode) {
                                           updatePrefs();
                                           updateDetails();
+
                                           ///TODO: update data on firebase
                                         }
                                         //updateDetails();
@@ -861,6 +859,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     pref.setString('allergies', allergies);
     print('pref updated!');
   }
+
   DropdownMenuItem<String> DpItem(
       BuildContext context, String text, double height) {
     return DropdownMenuItem(

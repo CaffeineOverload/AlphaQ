@@ -14,7 +14,7 @@ void sendSms() async {
   print(position);
   for (int i = 0; i < contactslist.length; i++) {
     String content =
-        'Hi ${contactslist[i].name}, your friend $name is in danger please help him/her. He/She is at cordinates ${position}';
+        'Hi ${contactslist[i].name}, your friend $name is in danger please help him/her. His/her location is https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
     await telephony.sendSms(
         to: contactslist[i].number, message: content, statusListener: listener);
   }
