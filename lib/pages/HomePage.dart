@@ -77,8 +77,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Future<void> asyncMethod() async {
     pref = await SharedPreferences.getInstance();
     //name = pref.getString('userName') ?? '';
+    extractDetails();
     darkMode = pref.getBool('dark') ?? false;
-    bloodgroup = pref.getString('bloodgroup') ?? 'Na';
+    bloodgroup = pref.getString('bloodgroup') ?? 'A+';
     age = pref.getString('age') ?? 'Na';
     diseases = pref.getString('diseases') ?? 'Na';
     allergies = pref.getString('allergies') ?? 'Na';
@@ -598,7 +599,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           DpItem(context, 'O-',
                                                               height),
                                                         ],
-                                                        value: 'A+',
+                                                        value: bloodgroup,
                                                         onChanged: _editmode
                                                             ? (value) {
                                                                 setState(() {

@@ -33,10 +33,7 @@ List<ContactsData> contactslist = [];
 String contactslistdata = '[]';
 Future<void> updateDetails() async {
   try {
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(currentUser.user.uid)
-        .set({
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
       'bloodgroup': bloodgroup,
       'age': age,
       'contacts': contactslistdata,
@@ -63,14 +60,16 @@ void extractDetails() async {
     final _storage = FirebaseFirestore.instance;
     final data = await _storage.collection('users').doc(uid).get();
     var data2 = data.data();
-    final mp = data2;
+    print(data2);
     name = data2['name'];
     bloodgroup = data2['bloodgroup'];
     diseases = data2['diseases'];
-    contactslist = data2['contacts'];
+    contactslistdata = data2['contacts'];
     age = data2['age'];
+    allergies = data2['allergies'];
+    print(data2);
   } on Exception catch (e) {
-    print(e);
+    //print(e);
   }
 }
 
