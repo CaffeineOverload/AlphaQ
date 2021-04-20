@@ -35,8 +35,6 @@ class _AlonePageState extends State<AlonePage> {
   bool detectonIsOn = false;
   bool canceltimer = false;
   stt.SpeechToText _speechToText = stt.SpeechToText();
-
-  // bool listening = false;
   String _text;
   @override
   void initState() {
