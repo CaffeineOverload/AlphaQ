@@ -397,6 +397,12 @@ class _AlonePageState extends State<AlonePage> {
           } else {
             percent = 1;
             sendSms();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Triggering Emergency protocol", textAlign: TextAlign.center,style: TextStyle(color:  Theme.of(context).buttonColor),),
+              backgroundColor: Theme.of(context).dividerColor,
+              elevation: 2,
+              duration: const Duration(seconds: 3),
+            ));
             print("Done Biatch! 1");
           }
         } else {
