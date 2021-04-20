@@ -340,15 +340,15 @@ class _AlonePageState extends State<AlonePage> {
 
   void check() {
     if (detectonIsOn) {
-      int t = 0;
+      // int t = 0;
       print(_text);
       checkTimer = Timer.periodic(Duration(minutes: 1), (timer) {
-        while (t > 3) {
+        // while (t > 1) {
           if (_text.contains("help")) {
             print("help found");
             sendSms();
           }
-        }
+        // }
       });
     }
   }
