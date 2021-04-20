@@ -37,6 +37,7 @@ class ContactsData{
     contactslistdata = encode(contactslist);
     print(contactslistdata);
     pref.setString('contactsData', contactslistdata);
+    updateDetails();
   }
 
   static bool contactIfExist(ContactsData contact){

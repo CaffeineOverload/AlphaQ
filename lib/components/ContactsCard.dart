@@ -46,6 +46,7 @@ class ContactsCard extends StatelessWidget {
               IconButton(icon: Icon(Icons.delete, color: Colors.red,),
                   onPressed: (){
                   update(index);
+                  updateDetails();
               }),
             ]
         ),

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:io' show Platform;
 import 'package:clay_containers/clay_containers.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
@@ -48,7 +48,9 @@ class _AlonePageState extends State<AlonePage> {
     if (recordIsOn == false) {
       bool result = await Record.hasPermission();
       print("initcalled");
-      final dir = await getExternalStorageDirectory();
+      var dir;
+      if(Platform.isAndroid)dir = await getExternalStorageDirectory();
+      if(Platform.isIOS) dir = await getApplicationDocumentsDirectory();
       String path = dir.path +
           '/' +
           DateTime.now().millisecondsSinceEpoch.toString() +
@@ -340,15 +342,15 @@ class _AlonePageState extends State<AlonePage> {
 
   void check() {
     if (detectonIsOn) {
-      int t = 0;
+      // int t = 0;
       print(_text);
       checkTimer = Timer.periodic(Duration(minutes: 1), (timer) {
-        while (t > 3) {
+        // while (t > 1) {
           if (_text.contains("help")) {
             print("help found");
             sendSms();
           }
-        }
+        // }
       });
     }
   }
