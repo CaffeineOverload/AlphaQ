@@ -20,6 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'Settings.dart';
 
@@ -61,11 +62,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
   }
 
-
   Future<void> asyncMethod() async {
+    if (await Permission.contacts.status.isDenied) {
+      await Permission.contacts.request();
+    }
+    if (await Permission.location.status.isDenied) {
+      await Permission.location.request();
+    }
+    if (await Permission.microphone.status.isDenied) {
+      await Permission.microphone.request();
+    }
+    if (await Permission.sms.status.isDenied) {
+      await Permission.sms.request();
+    }
+    if (await Permission.speech.status.isDenied) {
+      await Permission.speech.request();
+    }
+    // if (await Permission.manageExternalStorage.isDenied) {
+    //   await Permission.manageExternalStorage.request();
+    // }
+    if (await Permission.phone.status.isDenied) {
+      await Permission.phone.request();
+    }
     pref = await SharedPreferences.getInstance();
     bool firebaseAvailable = await extractDetails();
-    if(firebaseAvailable)updatePrefs();
+    if (firebaseAvailable) updatePrefs();
     darkMode = pref.getBool('dark') ?? false;
     bloodgroup = pref.getString('bloodgroup') ?? 'A+';
     age = pref.getString('age') ?? 'Na';
@@ -84,7 +105,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       dataRecive = false;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     print(contactslistdata);
@@ -165,7 +185,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             nameController.text = name;
                                             bloodController.text = bloodgroup;
                                             diseaseController.text = diseases;
-                                            allergiesController.text = allergies;
+                                            allergiesController.text =
+                                                allergies;
                                             ageController.text = age;
                                             _editmode = false;
                                           }
@@ -449,6 +470,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         if (!_editmode) {
                                           updatePrefs();
                                           updateDetails();
+
                                           ///TODO: update data on firebase
                                         }
                                         //updateDetails();
@@ -846,14 +868,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void updatePrefs() {
-    pref.setString('bloodgroup', bloodgroup??'');
-    pref.setString('age', age??'');
-    pref.setString('name', name??'');
-    pref.setString('diseases', diseases??'');
-    pref.setString('allergies', allergies??'');
-    pref.setString('contactsData',contactslistdata??'');
+    pref.setString('bloodgroup', bloodgroup ?? '');
+    pref.setString('age', age ?? '');
+    pref.setString('name', name ?? '');
+    pref.setString('diseases', diseases ?? '');
+    pref.setString('allergies', allergies ?? '');
+    pref.setString('contactsData', contactslistdata ?? '');
     print('pref updated!');
   }
+
   DropdownMenuItem<String> DpItem(
       BuildContext context, String text, double height) {
     return DropdownMenuItem(
