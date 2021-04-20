@@ -171,7 +171,7 @@ class _AlonePageState extends State<AlonePage> {
                                             setState(() {
                                               if (!timerIsOn) {
                                                 Wakelock.enable();
-                                                // startRecording();
+                                                startRecording();
                                                 timerIsOn = true;
                                                 listen();
                                                 startTimer(time);
