@@ -25,5 +25,5 @@ void sendSms() async {
 
 Future<void> makeCall() async {
   final telephony = Telephony.instance;
-  await telephony.dialPhoneNumber("112");
+  await telephony.dialPhoneNumber('100');
 }
