@@ -1,24 +1,21 @@
 import 'dart:async';
-import 'dart:io' show Platform;
+import 'dart:io';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-// import 'package:emergency_app/runner/backgroundMicDetection.dart';1
+// import 'package:emergency_app/runner/backgroundMicDetection.dart';
 import 'package:record/record.dart';
 import 'dart:core';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:speech_to_text/speech_recognition_error.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:path_provider/path_provider.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import 'dart:async';
-
-stt.SpeechToText _speechToText;
-bool _ready, _listening;
-String _lastStatus, _lastError, _lastWords;
+import 'package:wakelock/wakelock.dart';
 
 class AlonePage extends StatefulWidget {
   static String id = 'AlonePage';
@@ -32,42 +29,17 @@ class _AlonePageState extends State<AlonePage> {
   double percent = 0;
   bool timerIsOn = false;
   Timer time;
-  Timer checkTimer;
+  Timer _checktimer;
   double _confidance = 0;
   bool recordIsOn = false;
   bool detectonIsOn = false;
+  bool canceltimer = false;
+  stt.SpeechToText _speechToText = stt.SpeechToText();
   String _text;
   @override
   void initState() {
-    asyncMethod();
-    _speechToText = stt.SpeechToText();
+    startRecording();
     super.initState();
-  }
-
-  Future<void> asyncMethod() async {
-    if (recordIsOn == false) {
-      bool result = await Record.hasPermission();
-      print("initcalled");
-      var dir;
-      if(Platform.isAndroid)dir = await getExternalStorageDirectory();
-      if(Platform.isIOS) dir = await getApplicationDocumentsDirectory();
-      String path = dir.path +
-          '/' +
-          DateTime.now().millisecondsSinceEpoch.toString() +
-          '.m4a';
-      recordIsOn = true;
-      //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
-      print(path);
-      if (result == true) {
-        print("recoeding starded");
-        await Record.start(
-          path: path, // required
-          encoder: AudioEncoder.AAC, // by default
-          bitRate: 128000, // by default
-          samplingRate: 44100, // by default
-        );
-      }
-    }
   }
 
   @override
@@ -94,11 +66,13 @@ class _AlonePageState extends State<AlonePage> {
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        stopRecording();
-                        // _stop();
-                        // _cancel();
-                        timerIsOn = false;
-                        percent = 0;
+                        cancelDetec();
+                        stopRecord();
+                        setState(() {
+                          timerIsOn = false;
+                          percent = 0;
+                          Wakelock.disable();
+                        });
                         Navigator.pop(context);
                       },
                     ),
@@ -193,21 +167,17 @@ class _AlonePageState extends State<AlonePage> {
                                           onPressed: () {
                                             setState(() {
                                               if (!timerIsOn) {
+                                                Wakelock.enable();
+                                                startRecording();
                                                 timerIsOn = true;
-                                                initState();
-                                                _listen();
-                                                check();
+                                                listen();
                                                 startTimer(time);
                                               } else {
-                                                _stopListen();
-                                                stopCheck();
                                                 turnOffTimer();
                                                 Timer(
                                                     Duration(milliseconds: 600),
                                                     () {
                                                   timerIsOn = true;
-                                                  _listen();
-                                                  check();
                                                   startTimer(time);
                                                 });
                                               }
@@ -298,10 +268,12 @@ class _AlonePageState extends State<AlonePage> {
                       padding: const EdgeInsets.only(top: 20),
                       child: RawMaterialButton(
                         onPressed: () {
+                          setState(() {
+                            Wakelock.disable();
+                          });
+                          stopRecord();
+
                           turnOffTimer();
-                          _stopListen();
-                          stopCheck();
-                          stopRecording();
                         },
                         elevation: 8.0,
                         fillColor: Colors.red,
@@ -332,61 +304,92 @@ class _AlonePageState extends State<AlonePage> {
     );
   }
 
-  Future<bool> checkRecording() async {
-    return await Record.isRecording();
-  }
-
-  void stopRecording() async {
-    await Record.stop();
-  }
-
-  void check() {
-    if (detectonIsOn) {
-      // int t = 0;
-      print(_text);
-      checkTimer = Timer.periodic(Duration(minutes: 1), (timer) {
-        // while (t > 1) {
-          if (_text.contains("help")) {
-            print("help found");
-            sendSms();
-          }
-        // }
+  Future<void> stopRecord() async {
+    if (recordIsOn) {
+      setState(() {
+        recordIsOn = false;
       });
+      await Record.stop();
     }
   }
 
-  void stopCheck() {
-    checkTimer.cancel();
-  }
-
-  void _listen() async {
-    if (!detectonIsOn) {
-      bool init = await _speechToText.initialize(
-        onError: (val) => print("onError $val"),
-        onStatus: (val) => print("onstatus $val"),
-      );
-      if (init) {
-        setState(() {
-          detectonIsOn = true;
-        });
-        _speechToText.listen(
-          onResult: (val) => setState(() {
-            _text = val.recognizedWords;
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              _confidance = val.confidence;
-            }
-          }),
+  Future<void> listen() async {
+    if (phraseDetection) {
+      if (!detectonIsOn) {
+        bool init = await _speechToText.initialize(
+          onError: (val) => print("onError $val"),
+          onStatus: (val) => print("onstatus $val"),
         );
+        detectonIsOn = true;
+        Timer.periodic(Duration(seconds: 5), (_checktimer) async {
+          print(init);
+          if (init) {
+            _speechToText.listen(
+              onResult: (val) => setState(() {
+                _text = val.recognizedWords;
+                if (val.hasConfidenceRating && val.confidence > 0) {
+                  _confidance = val.confidence;
+                }
+              }),
+            );
+            print("is litensing ${_speechToText.isListening}");
+            print("confi $_confidance");
+            print("text $_text");
+            if (_text == null) {
+              // if (_text.contains("help")) {
+              //   print("help found");
+              // }
+              sendSms();
+              turnOffTimer();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+                  "Triggering Emergency protocol",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Theme.of(context).buttonColor),
+                ),
+                backgroundColor: Theme.of(context).dividerColor,
+                elevation: 2,
+                duration: const Duration(seconds: 3),
+              ));
+              _checktimer.cancel();
+            }
+          }
+          if (canceltimer) {
+            if (_speechToText != null) {
+              _speechToText.cancel();
+            }
+            _checktimer.cancel();
+          }
+        });
       }
     }
   }
 
-  void _stopListen() async {
-    if (detectonIsOn) {
-      setState(() {
-        detectonIsOn = false;
-      });
-      _speechToText.stop();
+  Future<void> startRecording() async {
+    if (recordAudio) {
+      if (!recordIsOn) {
+        bool result = await Record.hasPermission();
+        print("initcalled");
+        var dir;
+        if (Platform.isAndroid) dir = await getExternalStorageDirectory();
+        if (Platform.isIOS) dir = await getApplicationDocumentsDirectory();
+        String path = dir.path +
+            '/' +
+            DateTime.now().millisecondsSinceEpoch.toString() +
+            '.m4a';
+        recordIsOn = true;
+        //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
+        print(path);
+        if (result == true) {
+          print("recoeding starded");
+          await Record.start(
+            path: path, // required
+            encoder: AudioEncoder.AAC, // by default
+            bitRate: 128000, // by default
+            samplingRate: 44100, // by default
+          );
+        }
+      }
     }
   }
 
@@ -406,9 +409,17 @@ class _AlonePageState extends State<AlonePage> {
             percent += 0.01;
           } else {
             percent = 1;
-
-            ///TODO: send sms
             sendSms();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                "Triggering Emergency protocol",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).buttonColor),
+              ),
+              backgroundColor: Theme.of(context).dividerColor,
+              elevation: 2,
+              duration: const Duration(seconds: 3),
+            ));
             print("Done Biatch! 1");
           }
         } else {
@@ -451,6 +462,13 @@ class _AlonePageState extends State<AlonePage> {
           }
         });
       });*/
+  }
+
+  void cancelDetec() {
+    if (phraseDetection) {
+      canceltimer = true;
+      detectonIsOn = false;
+    }
   }
 
   void turnOffTimer() {
