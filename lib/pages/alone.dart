@@ -16,7 +16,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 
-final stt.SpeechToText _speechToText = stt.SpeechToText();
+stt.SpeechToText _speechToText;
 bool _ready, _listening;
 String _lastStatus, _lastError, _lastWords;
 
@@ -32,11 +32,15 @@ class _AlonePageState extends State<AlonePage> {
   double percent = 0;
   bool timerIsOn = false;
   Timer time;
+  Timer checkTimer;
+  double _confidance = 0;
   bool recordIsOn = false;
   bool detectonIsOn = false;
+  String _text;
   @override
   void initState() {
     asyncMethod();
+    _speechToText = stt.SpeechToText();
     super.initState();
   }
 
@@ -89,8 +93,8 @@ class _AlonePageState extends State<AlonePage> {
                       ),
                       onPressed: () {
                         stopRecording();
-                        _stop();
-                        _cancel();
+                        // _stop();
+                        // _cancel();
                         timerIsOn = false;
                         percent = 0;
                         Navigator.pop(context);
@@ -188,18 +192,19 @@ class _AlonePageState extends State<AlonePage> {
                                             setState(() {
                                               if (!timerIsOn) {
                                                 timerIsOn = true;
-                                                // print(loop());
                                                 initState();
+                                                _listen();
                                                 check();
                                                 startTimer(time);
                                               } else {
-                                                _stop();
-                                                _cancel();
+                                                _stopListen();
+                                                stopCheck();
                                                 turnOffTimer();
                                                 Timer(
                                                     Duration(milliseconds: 600),
                                                     () {
                                                   timerIsOn = true;
+                                                  _listen();
                                                   check();
                                                   startTimer(time);
                                                 });
@@ -292,8 +297,8 @@ class _AlonePageState extends State<AlonePage> {
                       child: RawMaterialButton(
                         onPressed: () {
                           turnOffTimer();
-                          _stop();
-                          _cancel();
+                          _stopListen();
+                          stopCheck();
                           stopRecording();
                         },
                         elevation: 8.0,
@@ -333,92 +338,54 @@ class _AlonePageState extends State<AlonePage> {
     await Record.stop();
   }
 
-  // bool loop() {
-  //   if (detectonIsOn == false) {
-  //     int t = 0;
-  //     init();
-  //     _start();
-  //     const time = const Duration(minutes: 1);
-  //     new Timer.periodic(time, (timer) {
-  //       _stop();
-  //       if (check()) {
-  //         return true;
-  //       }
-  //       t++;
-  //       if (t == 15) {
-  //         timer.cancel();
-  //         return false;
-  //       }
-  //       _start();
-  //     });
-  //     return false;
-  //   }
-  // }
-
-  void init() async {
-    _ready = await _speechToText.initialize(
-      onError: _onError,
-      onStatus: _onStatus,
-    );
-    print("detection init");
-  }
-
-  void _start() async {
-    print("Detection Started");
-    await _speechToText.listen(onResult: _speechResult);
-    _listening = true;
-    // setState(() {
-    //   _listening = true;
-    // });
-  }
-
-  void _stop() async {
-    _speechToText.stop();
-    _listening = false;
-
-    // setState(() {
-    //   _listening = false;
-    // });
-    print("detection stopped");
-  }
-
-  void _cancel() async {
-    _speechToText.cancel();
-    _listening = false;
-
-    // setState(() {
-    //   _listening = false;
-    // });
-  }
-
-  void _onStatus(String status) {
-    _lastStatus = status;
-    // setState(() {
-    //   _lastStatus = status;
-    // });
-    print(_lastStatus);
-  }
-
-  void _onError(SpeechRecognitionError errorNotification) {
-    setState(() {
-      _lastError = errorNotification.errorMsg;
-    });
-    print(_lastError);
-  }
-
-  void _speechResult(SpeechRecognitionResult result) {
-    setState(() {
-      _lastWords = result.recognizedWords;
-    });
-    print(_lastWords);
-  }
-  bool check() {
-    print(_lastWords);
-    if (_lastWords.contains("help")) {
-      print("help found");
-      return true;
+  void check() {
+    if (detectonIsOn) {
+      int t = 0;
+      print(_text);
+      checkTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+        while (t > 3) {
+          if (_text.contains("help")) {
+            print("help found");
+            sendSms();
+          }
+        }
+      });
     }
-    return false;
+  }
+
+  void stopCheck() {
+    checkTimer.cancel();
+  }
+
+  void _listen() async {
+    if (!detectonIsOn) {
+      bool init = await _speechToText.initialize(
+        onError: (val) => print("onError $val"),
+        onStatus: (val) => print("onstatus $val"),
+      );
+      if (init) {
+        setState(() {
+          detectonIsOn = true;
+        });
+        _speechToText.listen(
+          onResult: (val) => setState(() {
+            _text = val.recognizedWords;
+            if (val.hasConfidenceRating && val.confidence > 0) {
+              _confidance = val.confidence;
+            }
+          }),
+        );
+      }
+    }
+  }
+
+  void _stopListen() async {
+    if (detectonIsOn) {
+      setState(() {
+        detectonIsOn = false;
+      });
+      _speechToText.stop();
+    }
   }
 
   void startTimer(Timer _time) {
