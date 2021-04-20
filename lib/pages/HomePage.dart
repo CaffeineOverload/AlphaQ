@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
-
+import 'package:emergency_app/data/constants.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,6 +53,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double percent = 0;
   int timeInSeconds = 0;
   bool dataRecive = true;
+  Color baseColor;
+  Color baseColor2;
   @override
   void initState() {
     controller = AnimationController(
@@ -66,9 +69,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (await Permission.contacts.status.isDenied) {
       await Permission.contacts.request();
     }
-    if (await Permission.location.status.isDenied) {
-      await Permission.location.request();
+    if (await Permission.locationAlways.status.isDenied) {
+      await Permission.locationAlways.request();
     }
+    LocationPermission permission = await Geolocator.requestPermission();
+
     if (await Permission.microphone.status.isDenied) {
       await Permission.microphone.request();
     }
@@ -78,9 +83,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (await Permission.speech.status.isDenied) {
       await Permission.speech.request();
     }
-    // if (await Permission.manageExternalStorage.isDenied) {
-    //   await Permission.manageExternalStorage.request();
-    // }
     if (await Permission.phone.status.isDenied) {
       await Permission.phone.request();
     }
@@ -109,7 +111,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     print(contactslistdata);
     print(dataRecive);
-    Color baseColor = Theme.of(context).backgroundColor;
+    baseColor = Theme.of(context).backgroundColor;
+    baseColor2 = Theme.of(context).backgroundColor;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     currentDisplaySize.height = height;
@@ -150,8 +153,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Hero(
                                 tag: 'deep',
                                 child: UserAvatar(
-                                  size: height * 0.054,
-                                  image: AssetImage('images/image.png'),
+                                  size: height * 0.052,
+                                  image: AssetImage('images/Icon.png'),
                                 )),
                             Expanded(
                               child: Padding(
@@ -293,6 +296,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   if (!timerIsOn) {
                                                     timerIsOn = true;
                                                     startTimer(time);
+
                                                   } else {
                                                     timerIsOn = false;
                                                     percent = 0;
@@ -488,11 +492,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     )),
                               ],
                             ),
-                            Center(
+                           /* Center(
                               child: UserAvatar(
                                 size: height * 0.064,
                                 image: AssetImage('images/image.png'),
                               ),
+                            ),*/
+                            Center(
+                              child: Text('User Details:', style: TextStyle(fontWeight: FontWeight.w800, fontSize: height * 0.0326),)
+                            ),
+                            SizedBox(
+                              height: 20,
                             ),
                             Container(
                               child: TextField(
@@ -753,7 +763,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   )),
                   activeColor: Colors.red,
                   inactiveColor: Colors.grey),
-              BottomNavyBarItem(
+              /*BottomNavyBarItem(
                   icon: Icon(
                     Icons.medical_services_rounded,
                     size: height * 0.03239,
@@ -764,7 +774,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     style: TextStyle(fontSize: height * 0.01619),
                   )),
                   activeColor: Colors.red,
-                  inactiveColor: Colors.grey),
+                  inactiveColor: Colors.grey),*/
               BottomNavyBarItem(
                   icon: Icon(Icons.contacts_rounded, size: height * 0.03239),
                   title: Center(
@@ -788,7 +798,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                if (currentIndex != 0 && currentIndex != 1) {
+                if (currentIndex != 0 ) {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
                 }
               });
@@ -801,9 +811,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     switch (currentIndex) {
       case 0:
         return HomePage.id;
-      case 2:
+      case 1:
         return ContactsPage.id;
-      case 3:
+      case 2:
         return SettingPage.id;
     }
   }
@@ -852,7 +862,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 } else {
                   percent = 1;
                   sendSms();
-
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Triggering Emergency protocol", textAlign: TextAlign.center,style: TextStyle(color:  Theme.of(context).buttonColor),),
+                    backgroundColor: Theme.of(context).dividerColor,
+                    elevation: 2,
+                    duration: const Duration(seconds: 3),
+                  ));
                   ///TODO: send sms
                 }
               }
@@ -893,4 +908,5 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       value: text,
     );
   }
+
 }

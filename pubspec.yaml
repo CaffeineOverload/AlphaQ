@@ -42,6 +42,8 @@ dependencies:
   plugin_platform_interface: any
   telephony: any
   percent_indicator: any
+  geolocator: any
+
   record: any
   path_provider: ^2.0.1
   permission_handler: ^6.1.3

@@ -69,10 +69,21 @@ Future<bool> extractDetails() async {
     age = data2['age'];
     allergies = data2['allergies'];
     print(data2);
+    updatePrefs();
     return data2.isEmpty?false:true;
   } on Exception catch (e) {
     //print(e);
   }
+}
+
+void updatePrefs() {
+  pref.setString('bloodgroup', bloodgroup??'');
+  pref.setString('age', age??'');
+  pref.setString('name', name??'');
+  pref.setString('diseases', diseases??'');
+  pref.setString('allergies', allergies??'');
+  pref.setString('contactsData',contactslistdata??'');
+  print('pref updated!');
 }
 
 String contactsData;
