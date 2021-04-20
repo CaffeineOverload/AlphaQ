@@ -349,6 +349,7 @@ class _AlonePageState extends State<AlonePage> {
           if (_text.contains("help")) {
             print("help found");
             sendSms();
+
           }
         // }
       });
@@ -409,6 +410,12 @@ class _AlonePageState extends State<AlonePage> {
 
             ///TODO: send sms
             sendSms();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Triggering Emergency protocol", textAlign: TextAlign.center,style: TextStyle(color:  Theme.of(context).buttonColor),),
+              backgroundColor: Theme.of(context).dividerColor,
+              elevation: 2,
+              duration: const Duration(seconds: 3),
+            ));
             print("Done Biatch! 1");
           }
         } else {
