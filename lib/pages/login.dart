@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               showSpinner = true;
                             });
-                            _getuser();
+                            await _getuser();
                             setState(() {
                               showSpinner = false;
                             });
@@ -159,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
       final currentUser = await _auth.signInWithEmailAndPassword(
           email: Email, password: Password);
       //print(currentUser);
-      extractDetails();
+      //extractDetails();
       SharedPreferences.getInstance().then((prefs) {
         uid = currentUser.user.uid;
         prefs.setString('uid', currentUser.user.uid);
