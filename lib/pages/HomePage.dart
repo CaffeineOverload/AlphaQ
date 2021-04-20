@@ -11,6 +11,7 @@ import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:emergency_app/pages/alone.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -36,7 +37,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   TextEditingController ageController = TextEditingController();
   TextEditingController diseaseController = TextEditingController();
   TextEditingController allergiesController = TextEditingController();
-//   String name = 'Susan';
   double buttonDepth = 100;
   double button2Depth = 40;
   bool firstvalue = true;
@@ -46,8 +46,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _pageState = 0;
   double _yOffset = 0;
   bool _editmode = false;
-  double _animatedHeight = 0;
-  double _animatedWidth = 0;
   bool timerIsOn = false;
   Timer time;
   double percent = 0;
@@ -63,20 +61,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
   }
 
-  String capitalise(String a) {
-    List<String> list = a.split(" ");
-    a = "";
-    for (int i = 0; i < list.length; i++) {
-      a = a + ' ';
-      a = a + list[i][0].toUpperCase() + list[i].substring(1);
-    }
-    return a;
-  }
 
   Future<void> asyncMethod() async {
     pref = await SharedPreferences.getInstance();
-    //name = pref.getString('userName') ?? '';
-    extractDetails();
+    bool firebaseAvailable = await extractDetails();
+    if(firebaseAvailable)updatePrefs();
     darkMode = pref.getBool('dark') ?? false;
     bloodgroup = pref.getString('bloodgroup') ?? 'A+';
     age = pref.getString('age') ?? 'Na';
@@ -87,10 +76,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     phraseDetection = pref.getBool('phrase') ?? false;
     contactslistdata = (pref.getString('contactsData')) ?? '[]';
     contactslist = ContactsData.decode(contactslistdata);
-//     name = pref.getString('name');
-    currentUser = await FirebaseAuth.instance
+    name = pref.getString('name');
+    /*currentUser = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password);
-    name = currentUser.user.displayName;
+    name = currentUser.user.displayName;*/
     setState(() {
       dataRecive = false;
     });
@@ -98,6 +87,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print(contactslistdata);
+    print(dataRecive);
     Color baseColor = Theme.of(context).backgroundColor;
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -153,7 +144,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     Text(
                                       name == null
                                           ? ''
-                                          : 'Hello ${capitalise(name.trim().split(' ').first)}',
+                                          : 'Hello ${name.trim().split(' ').first}',
                                       style: TextStyle(
                                         fontSize: width * 0.0381,
                                         fontWeight: FontWeight.w600,
@@ -174,6 +165,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             nameController.text = name;
                                             bloodController.text = bloodgroup;
                                             diseaseController.text = diseases;
+                                            allergiesController.text = allergies;
                                             ageController.text = age;
                                             _editmode = false;
                                           }
@@ -854,11 +846,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void updatePrefs() {
-    pref.setString('bloodgroup', bloodgroup);
-    pref.setString('age', age);
-    pref.setString('name', name);
-    pref.setString('diseases', diseases);
-    pref.setString('allergies', allergies);
+    pref.setString('bloodgroup', bloodgroup??'');
+    pref.setString('age', age??'');
+    pref.setString('name', name??'');
+    pref.setString('diseases', diseases??'');
+    pref.setString('allergies', allergies??'');
+    pref.setString('contactsData',contactslistdata??'');
     print('pref updated!');
   }
   DropdownMenuItem<String> DpItem(

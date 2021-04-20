@@ -26,6 +26,8 @@ String uid;
 String bloodgroup;
 String age;
 String diseases;
+String email;
+String password;
 UserCredential currentUser;
 List<ContactsData> contactslist = [];
 String contactslistdata = '[]';
@@ -42,6 +44,7 @@ Future<void> updateDetails() async {
       'name': name,
       'imageurl': '',
     });
+    print('Details updated on firebase');
   } on Exception catch (e) {
     print(e);
   }
@@ -53,7 +56,7 @@ Future<void> updateDetails() async {
   //print(detail.docs.first.data().updateAll((key, value) =>));
 }
 
-void extractDetails() async {
+Future<bool> extractDetails() async {
   try {
     final _storage = FirebaseFirestore.instance;
     final data = await _storage.collection('users').doc(uid).get();
@@ -66,6 +69,7 @@ void extractDetails() async {
     age = data2['age'];
     allergies = data2['allergies'];
     print(data2);
+    return data2.isEmpty?false:true;
   } on Exception catch (e) {
     //print(e);
   }

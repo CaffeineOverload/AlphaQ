@@ -296,7 +296,7 @@ class _RegisterPageState extends State<RegisterPage> {
           .set({
         'bloodgroup': bloodgroup,
         'age': age,
-        'contacts': [],
+        'contacts': '[]',
         'diseases': diseases,
 
         ///TODO: add allergies
