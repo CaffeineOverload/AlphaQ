@@ -66,8 +66,7 @@ class _AlonePageState extends State<AlonePage> {
                         color: Colors.red,
                       ),
                       onPressed: () {
-                        canceltimer = true;
-                        detectonIsOn = false;
+                        cancelDetec();
                         stopRecord();
                         setState(() {
                           timerIsOn = false;
@@ -273,8 +272,7 @@ class _AlonePageState extends State<AlonePage> {
                             Wakelock.disable();
                           });
                           stopRecord();
-                          canceltimer = true;
-                          detectonIsOn = false;
+
                           turnOffTimer();
                         },
                         elevation: 8.0,
@@ -307,73 +305,90 @@ class _AlonePageState extends State<AlonePage> {
   }
 
   Future<void> stopRecord() async {
-    setState(() {
-      recordIsOn = false;
-    });
-    await Record.stop();
+    if (recordIsOn) {
+      setState(() {
+        recordIsOn = false;
+      });
+      await Record.stop();
+    }
   }
 
   Future<void> listen() async {
-    if (!detectonIsOn) {
-      bool init = await _speechToText.initialize(
-        onError: (val) => print("onError $val"),
-        onStatus: (val) => print("onstatus $val"),
-      );
-      detectonIsOn = true;
-      Timer.periodic(Duration(seconds: 5), (_checktimer) async {
-        print(init);
-        if (init) {
-          _speechToText.listen(
-            onResult: (val) => setState(() {
-              _text = val.recognizedWords;
-              if (val.hasConfidenceRating && val.confidence > 0) {
-                _confidance = val.confidence;
-              }
-            }),
-          );
-          print("is litensing ${_speechToText.isListening}");
-          print("confi $_confidance");
-          print("text $_text");
-          if (_text == null) {
-            // if (_text.contains("help")) {
-            //   print("help found");
-            // }
-            sendSms();
+    if (phraseDetection) {
+      if (!detectonIsOn) {
+        bool init = await _speechToText.initialize(
+          onError: (val) => print("onError $val"),
+          onStatus: (val) => print("onstatus $val"),
+        );
+        detectonIsOn = true;
+        Timer.periodic(Duration(seconds: 5), (_checktimer) async {
+          print(init);
+          if (init) {
+            _speechToText.listen(
+              onResult: (val) => setState(() {
+                _text = val.recognizedWords;
+                if (val.hasConfidenceRating && val.confidence > 0) {
+                  _confidance = val.confidence;
+                }
+              }),
+            );
+            print("is litensing ${_speechToText.isListening}");
+            print("confi $_confidance");
+            print("text $_text");
+            if (_text == null) {
+              // if (_text.contains("help")) {
+              //   print("help found");
+              // }
+              sendSms();
+              turnOffTimer();
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+                  "Triggering Emergency protocol",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Theme.of(context).buttonColor),
+                ),
+                backgroundColor: Theme.of(context).dividerColor,
+                elevation: 2,
+                duration: const Duration(seconds: 3),
+              ));
+              _checktimer.cancel();
+            }
+          }
+          if (canceltimer) {
+            if (_speechToText != null) {
+              _speechToText.cancel();
+            }
             _checktimer.cancel();
           }
-        }
-        if (canceltimer) {
-          if (_speechToText != null) {
-            _speechToText.cancel();
-          }
-          _checktimer.cancel();
-        }
-      });
+        });
+      }
     }
   }
 
   Future<void> startRecording() async {
-    if (!recordIsOn) {
-      bool result = await Record.hasPermission();
-      print("initcalled");
-      var dir;
-      if (Platform.isAndroid) dir = await getExternalStorageDirectory();
-      if (Platform.isIOS) dir = await getApplicationDocumentsDirectory();
-      String path = dir.path +
-          '/' +
-          DateTime.now().millisecondsSinceEpoch.toString() +
-          '.m4a';
-      recordIsOn = true;
-      //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
-      print(path);
-      if (result == true) {
-        print("recoeding starded");
-        await Record.start(
-          path: path, // required
-          encoder: AudioEncoder.AAC, // by default
-          bitRate: 128000, // by default
-          samplingRate: 44100, // by default
-        );
+    if (recordAudio) {
+      if (!recordIsOn) {
+        bool result = await Record.hasPermission();
+        print("initcalled");
+        var dir;
+        if (Platform.isAndroid) dir = await getExternalStorageDirectory();
+        if (Platform.isIOS) dir = await getApplicationDocumentsDirectory();
+        String path = dir.path +
+            '/' +
+            DateTime.now().millisecondsSinceEpoch.toString() +
+            '.m4a';
+        recordIsOn = true;
+        //TODO path=/storage/emulated/0/Android/data/com.caffineoverflow.emergency_app/files/1618846367115.m4a
+        print(path);
+        if (result == true) {
+          print("recoeding starded");
+          await Record.start(
+            path: path, // required
+            encoder: AudioEncoder.AAC, // by default
+            bitRate: 128000, // by default
+            samplingRate: 44100, // by default
+          );
+        }
       }
     }
   }
@@ -396,7 +411,11 @@ class _AlonePageState extends State<AlonePage> {
             percent = 1;
             sendSms();
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Triggering Emergency protocol", textAlign: TextAlign.center,style: TextStyle(color:  Theme.of(context).buttonColor),),
+              content: Text(
+                "Triggering Emergency protocol",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).buttonColor),
+              ),
               backgroundColor: Theme.of(context).dividerColor,
               elevation: 2,
               duration: const Duration(seconds: 3),
@@ -443,6 +462,13 @@ class _AlonePageState extends State<AlonePage> {
           }
         });
       });*/
+  }
+
+  void cancelDetec() {
+    if (phraseDetection) {
+      canceltimer = true;
+      detectonIsOn = false;
+    }
   }
 
   void turnOffTimer() {

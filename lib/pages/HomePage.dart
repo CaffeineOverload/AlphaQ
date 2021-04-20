@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (await Permission.contacts.status.isDenied) {
       await Permission.contacts.request();
     }
-    if (await Permission.location.status.isDenied) {
+    if (await Permission.locationAlways.status.isDenied) {
       await Permission.location.request();
     }
     if (await Permission.microphone.status.isDenied) {
@@ -80,9 +80,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (await Permission.speech.status.isDenied) {
       await Permission.speech.request();
     }
-    // if (await Permission.manageExternalStorage.isDenied) {
-    //   await Permission.manageExternalStorage.request();
-    // }
     if (await Permission.phone.status.isDenied) {
       await Permission.phone.request();
     }
