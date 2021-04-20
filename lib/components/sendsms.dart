@@ -8,7 +8,9 @@ void sendSms() async {
     print(status);
   };
   final telephony = Telephony.instance;
-  LocationPermission permission = await Geolocator.requestPermission();
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();}
   Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
   print(position);

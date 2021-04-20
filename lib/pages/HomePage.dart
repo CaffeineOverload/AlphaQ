@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,6 +72,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (await Permission.locationAlways.status.isDenied) {
       await Permission.locationAlways.request();
     }
+    LocationPermission permission = await Geolocator.requestPermission();
+
     if (await Permission.microphone.status.isDenied) {
       await Permission.microphone.request();
     }
