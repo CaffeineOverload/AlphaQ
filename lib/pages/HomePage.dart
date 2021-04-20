@@ -731,7 +731,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   )),
                   activeColor: Colors.red,
                   inactiveColor: Colors.grey),
-              BottomNavyBarItem(
+              /*BottomNavyBarItem(
                   icon: Icon(
                     Icons.medical_services_rounded,
                     size: height * 0.03239,
@@ -742,7 +742,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     style: TextStyle(fontSize: height * 0.01619),
                   )),
                   activeColor: Colors.red,
-                  inactiveColor: Colors.grey),
+                  inactiveColor: Colors.grey),*/
               BottomNavyBarItem(
                   icon: Icon(Icons.contacts_rounded, size: height * 0.03239),
                   title: Center(
@@ -766,7 +766,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             onItemSelected: (index) {
               setState(() {
                 currentIndex = index;
-                if (currentIndex != 0 && currentIndex != 1) {
+                if (currentIndex != 0 ) {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
                 }
               });
@@ -779,9 +779,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     switch (currentIndex) {
       case 0:
         return HomePage.id;
-      case 2:
+      case 1:
         return ContactsPage.id;
-      case 3:
+      case 2:
         return SettingPage.id;
     }
   }
