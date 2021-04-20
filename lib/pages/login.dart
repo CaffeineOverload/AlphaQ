@@ -162,7 +162,10 @@ class _LoginPageState extends State<LoginPage> {
       //extractDetails();
       SharedPreferences.getInstance().then((prefs) {
         uid = currentUser.user.uid;
-        prefs.setString('uid', currentUser.user.uid);
+        email = Email;
+        password = Password;
+        prefs.setString('uid', uid);
+        prefs.setString('email', Email);
       });
       Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e) => false);
     } catch (e) {
