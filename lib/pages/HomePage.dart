@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       await Permission.contacts.request();
     }
     if (await Permission.locationAlways.status.isDenied) {
-      await Permission.location.request();
+      await Permission.locationAlways.request();
     }
     if (await Permission.microphone.status.isDenied) {
       await Permission.microphone.request();

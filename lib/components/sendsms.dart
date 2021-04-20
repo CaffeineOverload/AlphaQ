@@ -17,10 +17,11 @@ void sendSms() async {
         'Hi ${contactslist[i].name}, your friend $name is in danger, Please help him/her. His/her location is https://www.google.com/maps/search/?api=1&query=${position.latitude},${position.longitude}';
     await telephony.sendSms(
         to: contactslist[i].number, message: content, statusListener: listener);
-    if(dialEmergencyNumbers) makeCall();
+    if (dialEmergencyNumbers) makeCall();
   }
 }
 
-void makeCall() {
-  launch("tel://1234");
+Future<void> makeCall() async {
+  final telephony = Telephony.instance;
+  await telephony.dialPhoneNumber("112");
 }
