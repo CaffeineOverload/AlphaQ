@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
-            initialRoute: uid != null ? HomePage.id : LoginPage.id,
+            initialRoute: uid != null? HomePage.id: LoginPage.id,
 
 //             initialRoute: LoginPage.id,
             routes: {

@@ -42,6 +42,7 @@ class _ContactsPageState extends State<ContactsPage> {
             color: Theme.of(context).accentColor,
           ),
           onPressed: () {
+            updateDetails();
             HapticFeedback.lightImpact();
             Navigator.pop(context);
             currentIndex = 0;
@@ -112,8 +113,9 @@ class _ContactsPageState extends State<ContactsPage> {
                                   }
                                   ContactsData.updateContactsListInPref(pref);
 
+
                                   ///TODO: update data on firebase
-                                  updateDetails();
+
                                 }
                               },
                               child: ClayContainer(

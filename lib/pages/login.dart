@@ -164,8 +164,8 @@ class _LoginPageState extends State<LoginPage> {
         uid = currentUser.user.uid;
         email = Email;
         password = Password;
-        prefs.setString('uid', Email);
-        prefs.setString('email', Password);
+        prefs.setString('uid', uid);
+        prefs.setString('email', Email);
       });
       Navigator.pushNamedAndRemoveUntil(context, HomePage.id, (e) => false);
     } catch (e) {

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:io' show Platform;
 import 'package:clay_containers/clay_containers.dart';
 import 'package:clay_containers/widgets/clay_container.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
@@ -64,7 +64,9 @@ class _AlonePageState extends State<AlonePage> {
     if (recordIsOn == false) {
       bool result = await Record.hasPermission();
       print("initcalled");
-      final dir = await getExternalStorageDirectory();
+      var dir;
+      if(Platform.isAndroid)dir = await getExternalStorageDirectory();
+      if(Platform.isIOS) dir = await getApplicationDocumentsDirectory();
       String path = dir.path +
           '/' +
           DateTime.now().millisecondsSinceEpoch.toString() +
@@ -208,7 +210,7 @@ class _AlonePageState extends State<AlonePage> {
                                               if (!timerIsOn) {
                                                 timerIsOn = true;
                                                 // print(loop());
-                                                initState();
+                                                //initState();
                                                 loop();
                                                 startTimer(time);
                                               } else {
