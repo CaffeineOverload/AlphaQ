@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   String Email;
   String Password;
   bool showSpinner = false;
+  bool _passwordVisible = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,12 +62,27 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 TextField(
-                  obscureText: true,
+                  obscureText: _passwordVisible,
                   controller: passController,
                   onChanged: (value) {
                     Password = value;
                   },
+
                   decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).accentColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.red, width: 2.0),
                       borderRadius: BorderRadius.all(Radius.circular(20)),

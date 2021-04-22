@@ -6,15 +6,11 @@ import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-// import 'package:emergency_app/runner/backgroundMicDetection.dart';
 import 'package:record/record.dart';
 import 'dart:core';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:path_provider/path_provider.dart';
-// import 'package:url_launcher/url_launcher.dart';
-import 'dart:async';
 import 'package:wakelock/wakelock.dart';
 
 class AlonePage extends StatefulWidget {
@@ -310,6 +306,7 @@ class _AlonePageState extends State<AlonePage> {
         recordIsOn = false;
       });
       await Record.stop();
+      print('Recording stopped');
     }
   }
 
@@ -349,7 +346,7 @@ class _AlonePageState extends State<AlonePage> {
             if (_text != null) {
               print("text not null");
               if (_text.contains("help")) {
-                // print("helpfound");
+                print("helpfound");
                 sendSms();
                 turnOffTimer();
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -4,9 +4,22 @@
 	<dict>
 
 		<key>NSContactsUsageDescription</key>
-		<string>Reason we need access to the contact list</string>
+		<string>Need permission so that you can add emergency contacts</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Need location to inform your friends when you need help</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Need location to inform your friends when you need help</string>
+        <key>NSLocationUsageDescription</key>
+        <string>Need location to inform your friends when you need help</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Need location to inform your friends when you need help</string>
 		<key>NSSpeechRecognitionUsageDescription</key>
 		<string>To detect your cry for help</string>
+		<key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsLocalNetworking</key>
+            <true/>
+        </dict>
 		<key>NSMicrophoneUsageDescription</key>
 		<string>To able to detect your help</string>
 		<key>LSApplicationQueriesSchemes</key>
