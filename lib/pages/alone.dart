@@ -341,6 +341,7 @@ class _AlonePageState extends State<AlonePage> {
     if (phraseDetection) {
       if (!detectonIsOn) {
         detectonIsOn = true;
+        spetotxt();
         Timer.periodic(Duration(seconds: 5), (_checktimer) {
           spetotxt();
           if (_speechToText.isNotListening) {
