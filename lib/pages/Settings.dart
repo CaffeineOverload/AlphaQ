@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'recordedFiles.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/ThemeChanger.dart';
 import 'package:emergency_app/models/contacts.dart';
@@ -235,13 +235,24 @@ class _SettingPageState extends State<SettingPage> {
                               onChanged: (value) async {
                                 if (!phraseDetection) {
                                   if (await Permission
-                                          .microphone.status.isDenied ||
-                                      await Permission.speech.isDenied) {
+                                          .microphone.status.isDenied
+                                      //|| await Permission.speech.isDenied
+                                  ) {
                                     await Permission.microphone.request();
-                                    await Permission.speech.request();
+                                    //await Permission.speech.request();
                                   }
-                                  if (await Permission.microphone.isGranted &&
-                                      await Permission.speech.isGranted) {
+                                  if (await Permission.microphone.isGranted
+                                      //&& await Permission.speech.isGranted
+                                  ) {
+// =======
+//                                           .microphone.status.isDenied ||
+//                                       await Permission.speech.isDenied) {
+//                                     await Permission.microphone.request();
+//                                     await Permission.speech.request();
+//                                   }
+//                                   if (await Permission.microphone.isGranted &&
+//                                       await Permission.speech.isGranted) {
+// >>>>>>> Kc
                                     setState(() {
                                       recordAudio = value;
                                       pref.setBool('audio', recordAudio);
@@ -270,7 +281,10 @@ class _SettingPageState extends State<SettingPage> {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                     content: Text(
-                                      "You cannot select Audio recording and phrase detection simultaneously",
+                                      "You cannot select Audio recording and Phrase detection simultaneously",
+// =======
+//                                       "You cannot select Audio recording and phrase detection simultaneously",
+// >>>>>>> Kc
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Theme.of(context).buttonColor),
@@ -278,7 +292,7 @@ class _SettingPageState extends State<SettingPage> {
                                     backgroundColor:
                                         Theme.of(context).dividerColor,
                                     elevation: 2,
-                                    duration: const Duration(seconds: 3),
+                                    duration: const Duration(seconds: 4),
                                   ));
                                   setState(() {
                                     value = false;
@@ -289,6 +303,34 @@ class _SettingPageState extends State<SettingPage> {
                               activeColor: Colors.red,
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          FaIcon(
+                            FontAwesomeIcons.solidFileAudio,
+                            size: 24,
+                          ),
+                          Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child:  Text(
+                                  'Recorded Audio Files',
+                                  style: TextStyle(
+                                      fontSize: 22, fontWeight: FontWeight.w500),
+                                ),
+                              )),
+                          IconButton(
+                            icon: Icon(Icons.arrow_forward_ios_rounded),
+                            iconSize: 24,
+                            onPressed: () {
+                              Navigator.pushNamed(context, RecordedFiles.id);
+                            },
+                          )
                         ],
                       ),
                     ),
@@ -342,13 +384,14 @@ class _SettingPageState extends State<SettingPage> {
                                       await Permission.speech.isGranted) {
                                     setState(() {
                                       phraseDetection = value;
+                                      //print(phraseDetection);
                                       pref.setBool('phrase', phraseDetection);
                                     });
                                   } else {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text(
-                                        "You cannot select Audio recording and phrase detection simultaneously",
+                                        "You cannot select Audio recording and Phrase detection simultaneously",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color:
@@ -357,7 +400,7 @@ class _SettingPageState extends State<SettingPage> {
                                       backgroundColor:
                                           Theme.of(context).dividerColor,
                                       elevation: 2,
-                                      duration: const Duration(seconds: 3),
+                                      duration: const Duration(seconds: 4),
                                     ));
                                     setState(() {
                                       phraseDetection = false;
