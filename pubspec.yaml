@@ -43,6 +43,7 @@ dependencies:
   telephony: any
   percent_indicator: any
   geolocator: any
+  audioplayers: any
 
   record: any
   path_provider: ^2.0.1
