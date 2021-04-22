@@ -126,7 +126,7 @@ class _SettingPageState extends State<SettingPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top:8.0),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: FaIcon(
                               FontAwesomeIcons.phoneAlt,
                               size: 22,
@@ -200,7 +200,7 @@ class _SettingPageState extends State<SettingPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top:8.0),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: FaIcon(
                               FontAwesomeIcons.microphone,
                               size: 22,
@@ -209,7 +209,6 @@ class _SettingPageState extends State<SettingPage> {
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 26),
-
                             child: Column(
                               //mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,11 +216,16 @@ class _SettingPageState extends State<SettingPage> {
                                 Text(
                                   'Record Audio',
                                   style: TextStyle(
-                                      fontSize: 22, fontWeight: FontWeight.w500),
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w500),
                                 ),
-                                Text('Audio will be recorded in Alone Mode for further use if option is enabled',
+                                Text(
+                                  'Audio will be recorded in Alone Mode for further use if option is enabled',
                                   style: TextStyle(
-                                      fontSize: 14,color: Colors.grey, fontWeight: FontWeight.w500),)
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w500),
+                                )
                               ],
                             ),
                           )),
@@ -240,6 +244,15 @@ class _SettingPageState extends State<SettingPage> {
                                   if (await Permission.microphone.isGranted
                                       //&& await Permission.speech.isGranted
                                   ) {
+// =======
+//                                           .microphone.status.isDenied ||
+//                                       await Permission.speech.isDenied) {
+//                                     await Permission.microphone.request();
+//                                     await Permission.speech.request();
+//                                   }
+//                                   if (await Permission.microphone.isGranted &&
+//                                       await Permission.speech.isGranted) {
+// >>>>>>> Kc
                                     setState(() {
                                       recordAudio = value;
                                       pref.setBool('audio', recordAudio);
@@ -269,6 +282,9 @@ class _SettingPageState extends State<SettingPage> {
                                       .showSnackBar(SnackBar(
                                     content: Text(
                                       "You cannot select Audio recording and Phrase detection simultaneously",
+// =======
+//                                       "You cannot select Audio recording and phrase detection simultaneously",
+// >>>>>>> Kc
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Theme.of(context).buttonColor),
@@ -324,7 +340,7 @@ class _SettingPageState extends State<SettingPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top:8.0),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: FaIcon(
                               FontAwesomeIcons.dotCircle,
                               size: 24,
@@ -340,11 +356,16 @@ class _SettingPageState extends State<SettingPage> {
                                 Text(
                                   'Trigger Phrases Detection',
                                   style: TextStyle(
-                                      fontSize: 22, fontWeight: FontWeight.w500),
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w500),
                                 ),
-                                Text('If enabled, the app will try to detect Phrases like "Help" to trigger Emergency SMS',
+                                Text(
+                                  'If enabled, the app will try to detect Phrases like "Help" to trigger Emergency SMS',
                                   style: TextStyle(
-                                      fontSize: 14,color: Colors.grey, fontWeight: FontWeight.w500),)
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w500),
+                                )
                               ],
                             ),
                           )),
@@ -424,7 +445,7 @@ class _SettingPageState extends State<SettingPage> {
                           Expanded(
                               child: Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child:  Text(
+                            child: Text(
                               'Log Out',
                               style: TextStyle(
                                   fontSize: 22, fontWeight: FontWeight.w500),

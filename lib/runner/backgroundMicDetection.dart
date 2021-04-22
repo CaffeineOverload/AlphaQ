@@ -1,4 +1,6 @@
 import 'dart:core';
+import 'package:emergency_app/data/data.dart';
+import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -8,66 +10,58 @@ final stt.SpeechToText _speechToText = stt.SpeechToText();
 bool _ready, _listening;
 String _lastStatus, _lastError, _lastWords;
 
-bool loop(int timing) {
-  int t = 0;
-  init();
-  _start();
-  const time = const Duration(minutes: 1);
-  new Timer.periodic(time, (timer) {
-    _stop();
-    if (check()) {
-      return true;
+Future<void> listen() async {
+  if (phraseDetection) {
+    bool detectonIsOn;
+    if (!detectonIsOn) {
+      bool init = await _speechToText.initialize(
+        onError: (val) => print("onError $val"),
+        onStatus: (val) => print("onstatus $val"),
+      );
+      detectonIsOn = true;
+      Timer.periodic(Duration(seconds: 5), (_checktimer) async {
+        print(init);
+        // if (init) {
+        //   _speechToText.listen(
+        //     onResult: (val) => setState(() {
+        //       var _text = val.recognizedWords;
+        //       if (val.hasConfidenceRating && val.confidence > 0) {
+        //         var _confidance = val.confidence;
+        //       }
+        //     }),
+        //   );
+        //   print("is litensing ${_speechToText.isListening}");
+        //   var _confidance;
+        //               print("confi $_confidance");
+        //   var _text;
+        //               print("text $_text");
+        //   if (_text == null) {
+        // if (_text.contains("help")) {
+        //   print("help found");
+        // }
+        // sendSms();
+        // turnOffTimer();
+        //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        //     content: Text(
+        //       "Triggering Emergency protocol",
+        //       textAlign: TextAlign.center,
+        //       style: TextStyle(color: Theme.of(context).buttonColor),
+        //     ),
+        //     backgroundColor: Theme.of(context).dividerColor,
+        //     elevation: 2,
+        //     duration: const Duration(seconds: 3),
+        //   ));
+        //   _checktimer.cancel();
+        // }
+        // }
+        bool canceltimer;
+        if (canceltimer) {
+          if (_speechToText != null) {
+            _speechToText.cancel();
+          }
+          _checktimer.cancel();
+        }
+      });
     }
-    t++;
-    if (timing == t) {
-      timer.cancel();
-    }
-    _start();
-  });
-  return false;
-}
-
-void init() async {
-  _ready = await _speechToText.initialize(
-    onError: _onError,
-    onStatus: _onStatus,
-  );
-}
-
-void _start() async {
-  await _speechToText.listen(onResult: _speechResult);
-  _listening = true;
-}
-
-void _stop() async {
-  _speechToText.stop();
-  _listening = false;
-}
-
-void _cancel() async {
-  _speechToText.cancel();
-  _listening = false;
-}
-
-void _onStatus(String status) {
-  _lastStatus = status;
-  print(_lastStatus);
-}
-
-void _onError(SpeechRecognitionError errorNotification) {
-  _lastError = errorNotification.errorMsg;
-  print(_lastError);
-}
-
-void _speechResult(SpeechRecognitionResult result) {
-  _lastWords = result.recognizedWords;
-  print(_lastWords);
-}
-
-bool check() {
-  if (_lastWords.contains("help")) {
-    print("help found");
-    return true;
   }
-  return false;
 }
