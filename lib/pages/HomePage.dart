@@ -73,18 +73,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       await Permission.locationAlways.request();
     }
     LocationPermission permission = await Geolocator.requestPermission();
-
-    if (await Permission.microphone.status.isDenied) {
-      await Permission.microphone.request();
-    }
+    
     if (await Permission.sms.status.isDenied) {
       await Permission.sms.request();
-    }
-    if (await Permission.speech.status.isDenied) {
-      await Permission.speech.request();
-    }
-    if (await Permission.phone.status.isDenied) {
-      await Permission.phone.request();
     }
     pref = await SharedPreferences.getInstance();
     bool firebaseAvailable = await extractDetails();
