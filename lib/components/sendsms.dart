@@ -10,7 +10,8 @@ void sendSms() async {
   final telephony = Telephony.instance;
   LocationPermission permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
-    permission = await Geolocator.requestPermission();}
+    permission = await Geolocator.requestPermission();
+  }
   Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
   print(position);
@@ -25,5 +26,5 @@ void sendSms() async {
 
 Future<void> makeCall() async {
   final telephony = Telephony.instance;
-  await telephony.dialPhoneNumber("112");
+  await telephony.dialPhoneNumber('100');
 }

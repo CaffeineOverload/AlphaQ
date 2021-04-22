@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock/wakelock.dart';
-
+import 'package:emergency_app/pages/recordedFiles.dart';
 import 'pages/Contacts.dart';
 import 'pages/HomePage.dart';
 import 'pages/Settings.dart';
@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
               RegisterPage.id: (context) => RegisterPage(),
               ForgetPass.id: (context) => ForgetPass(),
               LoginPage.id: (context) => LoginPage(),
+              RecordedFiles.id: (context) => RecordedFiles(),
             },
           );
         });

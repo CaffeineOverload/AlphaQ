@@ -1,17 +1,16 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:emergency_app/data/constants.dart';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:clay_containers/clay_containers.dart';
 import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/ProfileCard.dart';
 import 'package:emergency_app/components/UserAvatar.dart';
 import 'package:emergency_app/components/sendsms.dart';
+import 'package:emergency_app/data/constants.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:emergency_app/models/contacts.dart';
 import 'package:emergency_app/pages/Contacts.dart';
 import 'package:emergency_app/pages/alone.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -72,19 +71,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (await Permission.locationAlways.status.isDenied) {
       await Permission.locationAlways.request();
     }
-    LocationPermission permission = await Geolocator.requestPermission();
-
-    if (await Permission.microphone.status.isDenied) {
-      await Permission.microphone.request();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
     }
     if (await Permission.sms.status.isDenied) {
       await Permission.sms.request();
-    }
-    if (await Permission.speech.status.isDenied) {
-      await Permission.speech.request();
-    }
-    if (await Permission.phone.status.isDenied) {
-      await Permission.phone.request();
     }
     pref = await SharedPreferences.getInstance();
     bool firebaseAvailable = await extractDetails();
@@ -159,43 +151,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      name == null
-                                          ? ''
-                                          : 'Hello ${name.trim().split(' ').first}',
-                                      style: TextStyle(
-                                        fontSize: width * 0.0381,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey,
-                                        //fontWeight: FontWeight.bold),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (_pageState != 1) {
+                                        HapticFeedback.selectionClick();
+                                        changeBlurSigma(_pageState);
+                                        _pageState = 1;
+                                        nameController.text = name;
+                                        bloodController.text = bloodgroup;
+                                        diseaseController.text = diseases;
+                                        allergiesController.text =
+                                            allergies;
+                                        ageController.text = age;
+                                        _editmode = false;
+                                      }
+                                    });
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        name == null
+                                            ? ''
+                                            : 'Hello ${name.trim().split(' ').first}',
+                                        style: TextStyle(
+                                          fontSize: width * 0.0381,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey,
+                                          //fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 0,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (_pageState != 1) {
-                                            HapticFeedback.selectionClick();
-                                            changeBlurSigma(_pageState);
-                                            _pageState = 1;
-                                            nameController.text = name;
-                                            bloodController.text = bloodgroup;
-                                            diseaseController.text = diseases;
-                                            allergiesController.text =
-                                                allergies;
-                                            ageController.text = age;
-                                            _editmode = false;
-                                          }
-                                        });
-                                      },
-                                      child: Text(
+                                      SizedBox(
+                                        height: 0,
+                                      ),
+                                      Text(
                                         'See Profile',
                                         style: TextStyle(
                                             fontSize: width * 0.0331,
@@ -204,8 +196,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             //fontWeight: FontWeight.bold),
                                             ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -747,10 +739,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         //margin: EdgeInsets.all(5),
         height: height * 0.086,
         decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: (Theme.of(context).primaryColor==light.primaryColor)?Colors.grey:Colors.grey[700],
+              offset: Offset(0.0, 1.0), //(x,y)
+              blurRadius: 4.0,
+            ),
+          ],
           color: baseColor,
-          //borderRadius: BorderRadius.circular(height * 0.0431),
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(height*0.0431),
+            topLeft: Radius.circular(height*0.0431),
+          ),
         ),
-        child: BottomNavyBar(
+        child:Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(icon: Icon(Icons.home_rounded,color:currentIndex==0? Colors.red:Theme.of(context).buttonColor,), onPressed: (){
+                setState(() {
+                  currentIndex=0;
+                });
+            }),
+            IconButton(icon: Icon(Icons.contacts_rounded,color:currentIndex==1? Colors.red:Theme.of(context).buttonColor,), onPressed: (){
+              setState(() {
+                currentIndex=1;
+                Navigator.pushNamed(context, ContactsPage.id);
+              });
+            }),
+            /*IconButton(icon: Icon(Icons.contacts_rounded), onPressed: (){
+              Navigator.pushNamed(context, ContactsPage.id);
+            }),*/
+            IconButton(icon: Icon(Icons.settings,color:currentIndex==2? Colors.red:Theme.of(context).buttonColor), onPressed: (){
+              currentIndex=2;
+              Navigator.pushNamed(context, SettingPage.id);
+            })
+          ],
+        )
+        /* BottomNavyBar(
             showElevation: false,
             backgroundColor: Colors.transparent,
             items: <BottomNavyBarItem>[
@@ -763,7 +788,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   )),
                   activeColor: Colors.red,
                   inactiveColor: Colors.grey),
-              /*BottomNavyBarItem(
+              *//*BottomNavyBarItem(
                   icon: Icon(
                     Icons.medical_services_rounded,
                     size: height * 0.03239,
@@ -774,7 +799,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     style: TextStyle(fontSize: height * 0.01619),
                   )),
                   activeColor: Colors.red,
-                  inactiveColor: Colors.grey),*/
+                  inactiveColor: Colors.grey),*//*
               BottomNavyBarItem(
                   icon: Icon(Icons.contacts_rounded, size: height * 0.03239),
                   title: Center(
@@ -802,7 +827,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   Navigator.pushNamed(context, getRoutePage(currentIndex));
                 }
               });
-            }),
+            }),*/
       ),
     );
   }

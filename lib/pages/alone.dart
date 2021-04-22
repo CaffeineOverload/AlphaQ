@@ -6,15 +6,11 @@ import 'package:emergency_app/components/PopupMenu.dart';
 import 'package:emergency_app/components/sendsms.dart';
 import 'package:emergency_app/data/data.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-// import 'package:emergency_app/runner/backgroundMicDetection.dart';
 import 'package:record/record.dart';
 import 'dart:core';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:path_provider/path_provider.dart';
-// import 'package:url_launcher/url_launcher.dart';
-import 'dart:async';
 import 'package:wakelock/wakelock.dart';
 
 class AlonePage extends StatefulWidget {
@@ -170,7 +166,7 @@ class _AlonePageState extends State<AlonePage> {
                                                 Wakelock.enable();
                                                 startRecording();
                                                 timerIsOn = true;
-                                                listen();
+                                                check();
                                                 startTimer(time);
                                               } else {
                                                 turnOffTimer();
@@ -272,7 +268,7 @@ class _AlonePageState extends State<AlonePage> {
                             Wakelock.disable();
                           });
                           stopRecord();
-
+                          cancelDetec();
                           turnOffTimer();
                         },
                         elevation: 8.0,
@@ -310,54 +306,65 @@ class _AlonePageState extends State<AlonePage> {
         recordIsOn = false;
       });
       await Record.stop();
+      print('Recording stopped');
     }
   }
 
-  Future<void> listen() async {
+  Future<void> spetotxt() async {
     if (phraseDetection) {
-      if (!detectonIsOn) {
+      if (detectonIsOn) {
         bool init = await _speechToText.initialize(
           onError: (val) => print("onError $val"),
           onStatus: (val) => print("onstatus $val"),
         );
+        print(init);
+        if (init) {
+          _speechToText.listen(
+            onResult: (val) => setState(() {
+              _text = val.recognizedWords;
+              if (val.hasConfidenceRating && val.confidence > 0) {
+                _confidance = val.confidence;
+              }
+              print("confi $_confidance");
+              print("text $_text");
+            }),
+          );
+        }
+      }
+    }
+  }
+
+  void check() {
+    if (phraseDetection) {
+      if (!detectonIsOn) {
         detectonIsOn = true;
-        Timer.periodic(Duration(seconds: 5), (_checktimer) async {
-          print(init);
-          if (init) {
-            _speechToText.listen(
-              onResult: (val) => setState(() {
-                _text = val.recognizedWords;
-                if (val.hasConfidenceRating && val.confidence > 0) {
-                  _confidance = val.confidence;
-                }
-              }),
-            );
-            print("is litensing ${_speechToText.isListening}");
-            print("confi $_confidance");
-            print("text $_text");
-            if (_text == null) {
-              // if (_text.contains("help")) {
-              //   print("help found");
-              // }
-              sendSms();
-              turnOffTimer();
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(
-                  "Triggering Emergency protocol",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Theme.of(context).buttonColor),
-                ),
-                backgroundColor: Theme.of(context).dividerColor,
-                elevation: 2,
-                duration: const Duration(seconds: 3),
-              ));
-              _checktimer.cancel();
+        spetotxt();
+        Timer.periodic(Duration(seconds: 5), (_checktimer) {
+          spetotxt();
+          if (_speechToText.isNotListening) {
+            print("stt not listning");
+            if (_text != null) {
+              print("text not null");
+              if (_text.contains("help")) {
+                print("helpfound");
+                sendSms();
+                turnOffTimer();
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    "Triggering Emergency protocol",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Theme.of(context).buttonColor),
+                  ),
+                  backgroundColor: Theme.of(context).dividerColor,
+                  elevation: 2,
+                  duration: const Duration(seconds: 3),
+                ));
+                cancelDetec();
+              }
+              _text = null;
             }
           }
           if (canceltimer) {
-            if (_speechToText != null) {
-              _speechToText.cancel();
-            }
             _checktimer.cancel();
           }
         });
