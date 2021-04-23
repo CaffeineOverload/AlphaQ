@@ -3,8 +3,8 @@ Have your security in your Pocket.
 Due to increase in crime rates and insecurities among citizens, We have tried to provide a simple but efficient solution to tackle this. Our App revolves around a straightforward idea where the user can directly contact helpline authorities and their peers with just a touch or a callouts.
 
 ##Screenshots
-<img src="https://i.imgur.com/kq4OU3P.png" height="400">  <img src="https://i.imgur.com/pkA3GXU.png" height="400"> <img src="https://i.imgur.com/QquclcN.png" height="400">
-<img src="hhttps://i.imgur.com/dBTxQBz.png" height="400">    <img src="https://i.imgur.com/k5EiMvd.png" height="400"> <img src="https://i.imgur.com/I4PrlFW.jpeg" height="400"> <img src="https://i.imgur.com/TEVKmGo.png" height="400"> <img src="https://i.imgur.com/9slCS0A.png" height="400"> <img src="https://i.imgur.com/kogtHg4.png" height="400"> <img src="https://i.imgur.com/nX3qzk2.png" height="400"> 
+<img src="https://i.imgur.com/kq4OU3P.png" height="400">   <img src="https://i.imgur.com/QquclcN.png" height="400">
+<img src="hhttps://i.imgur.com/dBTxQBz.png" height="400">    <img src="https://i.imgur.com/k5EiMvd.png" height="400"> <img src="https://i.imgur.com/I4PrlFW.jpeg" height="400"> <img src="https://i.imgur.com/TEVKmGo.png" height="400"> <img src="https://i.imgur.com/9slCS0A.png" height="400"> <img src="https://i.imgur.com/kogtHg4.png" height="400"> <img src="https://i.imgur.com/nX3qzk2.png" height="400"> <img src="https://i.imgur.com/pkA3GXU.png" height="400">
 
 ## Challenges we ran into
 
