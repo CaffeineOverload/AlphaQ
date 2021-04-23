@@ -13,7 +13,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import "package:speech_to_text/speech_recognition_error.dart";
 import 'package:path_provider/path_provider.dart';
 import 'package:wakelock/wakelock.dart';
-import 'package:volume/volume.dart';
+// import 'package:volume/volume.dart';
 
 class AlonePage extends StatefulWidget {
   static String id = 'AlonePage';
@@ -21,25 +21,25 @@ class AlonePage extends StatefulWidget {
   _AlonePageState createState() => _AlonePageState();
 }
 
-int currentVol;
-void initState() {
-  // var audioManager = AudioManager.STREAM_SYSTEM;
-  initAudioStreamType();
-  getVolume();
-  setVol(0);
-}
+// int currentVol;
+// void initState() {
+//   // var audioManager = AudioManager.STREAM_SYSTEM;
+//   initAudioStreamType();
+//   getVolume();
+//   setVol(0);
+// }
 
-Future<void> initAudioStreamType() async {
-  await Volume.controlVolume(AudioManager.STREAM_SYSTEM);
-}
+// Future<void> initAudioStreamType() async {
+//   await Volume.controlVolume(AudioManager.STREAM_SYSTEM);
+// }
 
-getVolume() async {
-  currentVol = await Volume.getVol;
-}
+// getVolume() async {
+//   currentVol = await Volume.getVol;
+// }
 
-setVol(int i) async {
-  await Volume.setVol(i, showVolumeUI: ShowVolumeUI.HIDE);
-}
+// setVol(int i) async {
+//   await Volume.setVol(i, showVolumeUI: ShowVolumeUI.HIDE);
+// }
 
 class _AlonePageState extends State<AlonePage> {
   int timeInMinutes = 0;
@@ -91,7 +91,7 @@ class _AlonePageState extends State<AlonePage> {
                           percent = 0;
                           Wakelock.disable();
                         });
-                        setVol(currentVol);
+                        // setVol(currentVol);
                         Navigator.pop(context);
                       },
                     ),
@@ -293,7 +293,7 @@ class _AlonePageState extends State<AlonePage> {
                           stopRecord();
                           cancelDetec();
                           turnOffTimer();
-                          setVol(currentVol);
+                          // setVol(currentVol);
                         },
                         elevation: 8.0,
                         fillColor: Colors.red,
