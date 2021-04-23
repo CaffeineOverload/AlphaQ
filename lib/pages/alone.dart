@@ -10,6 +10,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:record/record.dart';
 import 'dart:core';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import "package:speech_to_text/speech_recognition_error.dart";
 import 'package:path_provider/path_provider.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -310,13 +311,24 @@ class _AlonePageState extends State<AlonePage> {
     }
   }
 
+  SpeechRecognitionError _sRE;
+  bool init;
+
   Future<void> spetotxt() async {
     if (phraseDetection) {
       if (detectonIsOn) {
-        bool init = await _speechToText.initialize(
-          onError: (val) => print("onError $val"),
+        init = await _speechToText.initialize(
+          onError: (_sRE) => print("onError $_sRE"),
           onStatus: (val) => print("onstatus $val"),
         );
+        if (_sRE != null) {
+          if (_sRE.errorMsg == "error_busy" ||
+              _sRE.errorMsg == "error_no_match" ||
+              _sRE.errorMsg == "error_speech_timeout") {
+            await _speechToText.stop();
+            spetotxt();
+          }
+        }
         print(init);
         if (init) {
           _speechToText.listen(
@@ -334,7 +346,7 @@ class _AlonePageState extends State<AlonePage> {
     }
   }
 
-  void check() {
+  Future<void> check() async {
     if (phraseDetection) {
       if (!detectonIsOn) {
         detectonIsOn = true;
