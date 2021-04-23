@@ -7,15 +7,15 @@ Due to increase in crime rates and insecurities among citizens, We have tried to
 
 ## Challenges we ran into
 
--Continous Phrase Detection: It was not working as it stops after a 
+- Continous Phrase Detection: It was not working as it stops after a 
 certain amount of time. We had to loop the Detector to detect
 again if it stops.
 
--Home screen widget: As flutter currently doeesn’t support Home 
+- Home screen widget: As flutter currently doeesn’t support Home 
 Screen widgets, We had to write the code in Java to support 
 homescreen widgets
 
--Calling Emergency Helpline number: The default URL launcher of 
+- Calling Emergency Helpline number: The default URL launcher of 
 Flutter directed the user to dialer instead of direct calling, so we had
 to use a separate package to make the call happen without user
 interaction.
