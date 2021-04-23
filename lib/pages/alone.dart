@@ -332,6 +332,7 @@ class _AlonePageState extends State<AlonePage> {
         print(init);
         if (init) {
           _speechToText.listen(
+            listenFor: Duration(seconds: 5),
             onResult: (val) => setState(() {
               _text = val.recognizedWords;
               if (val.hasConfidenceRating && val.confidence > 0) {

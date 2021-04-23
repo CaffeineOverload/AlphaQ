@@ -44,6 +44,7 @@ dependencies:
   percent_indicator: any
   geolocator: any
   audioplayers: any
+  background_stt: any
 
   record: any
   path_provider: ^2.0.1

@@ -36,6 +36,11 @@ class MyApp extends StatelessWidget {
         defaultBrightness: darkMode ? Brightness.dark : Brightness.light,
         builder: (context, _brightness) {
           return MaterialApp(
+            builder: (BuildContext context, Widget child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: child,
+              );},
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: (_brightness == Brightness.light) ? light : dark,
