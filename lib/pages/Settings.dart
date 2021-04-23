@@ -108,9 +108,9 @@ class _SettingPageState extends State<SettingPage> {
                             child: CupertinoSwitch(
                               onChanged: (value) {
                                 setState(() {
-                                  ThemeBuilder.of(context).changeTheme();
                                   darkMode = value;
                                   pref.setBool('dark', darkMode);
+                                  ThemeBuilder.of(context).changeTheme(darkMode);
                                 });
                               },
                               value: darkMode ?? false,
