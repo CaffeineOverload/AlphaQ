@@ -1,9 +1,14 @@
 # Emergency App
-Have your security in your Pocket.
+Have your security in your Pockets.
 Due to increase in crime rates and insecurities among citizens, We have tried to provide a simple but efficient solution to tackle this. Our App revolves around a straightforward idea where the user can directly contact helpline authorities and their peers with just a touch or a callouts.
 
+## What it does
+There are 2 modes, Normal Emergency Mode(Home Page) and Alone Mode(Alone Page). 
+- When you click the emergency button on home page, it starts a 5 sec countdown where you can tap the button again if you touched it by mistake. After 5 seconds, it triggers an emergency protocol where the app sends sms to all your emergency contacs informing them about your danger and also calls emergency helpline if enabled. 
+- In Alone Mode, After you press the emergency button it will start a 15 min timer and you've have to press the button again to register your presence or else it will trigger emergency protocol. There is also Phrase detection in background after you start timer, it will detect your help callouts.
+
 ## Screenshots
-<img src="https://i.imgur.com/kq4OU3P.png" height="400"> <img src="https://i.imgur.com/QquclcN.png" height="400"> <img src="hhttps://i.imgur.com/dBTxQBz.png" height="400"><img src="https://i.imgur.com/k5EiMvd.png" height="400"> <img src="https://i.imgur.com/I4PrlFW.jpeg" height="400"> <img src="https://i.imgur.com/TEVKmGo.png" height="400"> <img src="https://i.imgur.com/9slCS0A.png" height="400"> <img src="https://i.imgur.com/kogtHg4.png" height="400"> <img src="https://i.imgur.com/nX3qzk2.png" height="400"> <img src="https://i.imgur.com/pkA3GXU.png" height="400">
+<img src="https://i.imgur.com/kq4OU3P.png" height="400"> <img src="https://i.imgur.com/QquclcN.png" height="400"> <img src="hhttps://i.imgur.com/dBTxQBz.png" height="400"><img src="https://i.imgur.com/k5EiMvd.png" height="400"> <img src="https://i.imgur.com/I4PrlFW.jpeg" height="400"> <img src="https://i.imgur.com/TEVKmGo.png" height="400"> <img src="https://i.imgur.com/PYTIzXU.png" height="400"> <img src="https://i.imgur.com/9slCS0A.png" height="400"> <img src="https://i.imgur.com/kogtHg4.png" height="400"> <img src="https://i.imgur.com/nX3qzk2.png" height="400"> <img src="https://i.imgur.com/pkA3GXU.png" height="400">
 
 ## Challenges we ran into
 
