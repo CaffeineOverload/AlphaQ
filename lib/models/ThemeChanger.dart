@@ -29,10 +29,9 @@ class _ThemeBuilderState extends State<ThemeBuilder> {
       });
   }
 
-  void changeTheme() {
+  void changeTheme(bool darkmode) {
     setState(() {
-      _brightness =
-      _brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+      _brightness = !darkmode ? Brightness.light : Brightness.dark;
     });
   }
 

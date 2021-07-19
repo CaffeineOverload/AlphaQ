@@ -44,6 +44,7 @@ dependencies:
   percent_indicator: any
   geolocator: any
   audioplayers: any
+  background_stt: any
   volume: ^1.0.1
   flutter_sms: ^2.3.1
   record: any

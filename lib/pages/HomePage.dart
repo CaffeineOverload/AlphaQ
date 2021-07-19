@@ -737,7 +737,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: Container(
         //margin: EdgeInsets.all(5),
-        height: height * 0.086,
+        height: height * 0.076,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
