@@ -46,6 +46,7 @@ dependencies:
   audioplayers: any
   background_stt: any
   volume: ^1.0.1
+  flutter_sms: ^2.3.1
   record: any
   path_provider: ^2.0.1
   permission_handler: ^6.1.3
