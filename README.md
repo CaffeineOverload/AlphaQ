@@ -26,7 +26,7 @@ to use a separate package to make the call happen without user
 interaction.
  
 
-## What we learned
+## What we have learned
 
 - Storing preferences offline using shared preferences and syncing it to Firebase Database.
 - Creating home screen widgets for Flutter Apps .
